@@ -1,0 +1,151 @@
+---
+title: "EPID674 Epidemiologic Data Analysis using R"
+subtitle: "Hypothesis Testing in R"
+author: "Kelly Bakulski"
+date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
+output:
+   word_document: default
+   html_document: 
+    toc: true
+    toc_float: true
+---
+
+## Chapter 4, Hypothesis Testing with R
+
+# Set up options
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Install new packages
+```{r install packages, eval=FALSE}
+
+# Install packages. Do this only once.
+options(repos="https://cran.rstudio.com" )
+install.packages("epiDisplay")
+install.packages("Hmisc")
+install.packages("corrplot")
+
+# To avoid installing every time: change set up in curly brackets to eval=FALSE
+```
+
+# Load packages
+```{r load packages, include=FALSE}
+##### Load these packages for the current session
+library(epiDisplay)
+library(Hmisc)
+library(corrplot)
+```
+
+
+# Specify file directories
+```{r directories}
+directory <- "/cloud/project/" #Class option when coding on RStudio Cloud
+
+# Three alternate options to customize and specify source data directory if programming on a personal computer (only need to do the one that works for you)
+# directory<-"M:/EPID674/Data/" # Alternate option 1: location of the parent dataset in afs space of school computer
+# directory <- "/Volumes/GoogleDrive/My Drive/Teaching/EPID674/2020_fall/EPID674_Week4_Class/" # Alternate option 2: location of data on my Macbook
+# directory<-"C:/Users/bakulski/Documents/EPID674/Data/" #Alternate option 3: location of data on a personal PC
+
+date <- format(Sys.Date(), "%Y%m%d")
+```
+
+
+# Load data, remake useful variables
+```{r read data}
+
+# Check the file path
+paste0(directory, "nhanes3.rda")
+# Load the saved R data
+load(paste0(directory, "nhanes3.rda"))
+### Or load RData if you saved the workspace image
+# load(".RData")
+
+
+# Remake a few variables from last class if they are no longer in your environment
+sex1 <- factor(nhanes$sex, levels = c(1, 2), labels = c("male", "female"))
+AGE5b <- cut(nhanes$age, quantile(nhanes$age, c(0, .2, .4, .6, .8, 1)), include.lowest = T) # quintiles
+AGE5c <- cut(nhanes$age, breaks = c(19, 40, 50, 60, 70, 90))
+age5c <- unclass(AGE5c)
+nhanes <- cbind(nhanes, sex1, AGE5b, AGE5c, age5c)
+```
+
+# Basic statistical tests in R
+
+# Remember to check your distributions/assumptions
+```{r histograms continuous}
+hist(nhanes$dbp)
+hist(nhanes$bpb)
+for (i in 1:ncol(nhanes)) {
+  if(is.numeric(nhanes[,i])==T) {
+     hist(nhanes[, i], main = colnames(nhanes)[i])
+    }
+}
+```
+
+
+# Correlation tests
+```{r correlation tests}
+cor.test(nhanes$age, nhanes$bmi)
+cor.test(nhanes$age, nhanes$bpb, method = "spearman")
+```
+
+# Correlation matrices
+```{r correlation matrix}
+nhanes.d <- cbind(nhanes$age, nhanes$bmi, nhanes$bpb, nhanes$sbp)
+rcorr(nhanes.d)
+rcorr(nhanes.d, type = "spearman")
+
+corrplot(cor(nhanes.d))
+
+nhanes.e <- na.omit(nhanes[, c("age", "bmi", "bpb", "sbp")])
+cor(nhanes.e)
+nhanes.f <- cbind(nhanes.e$age, nhanes.e$bmi, nhanes.e$bpb, nhanes.e$sbp)
+rcorr(nhanes.f)
+rcorr(nhanes.f, type = "spearman")
+
+corrplot.mixed(cor(nhanes.f), upper = "ellipse", lower = "number")
+```
+
+# T-test and Wilcoxon test
+```{r ttest wilcoxon} 
+t.test(nhanes$dbp ~ nhanes$sex1)
+wilcox.test(nhanes$bpb ~ nhanes$sex1)
+t.test(log(nhanes$bpb) ~ nhanes$sex1, var.equal = T)
+```
+
+# ANOVA
+```{r anova}
+tapply(log(nhanes$bpb), nhanes$AGE5b, mean)
+
+aov(log(nhanes$bpb) ~ nhanes$AGE5b)
+bpb.aov <- aov(log(nhanes$bpb) ~ nhanes$AGE5b)
+anova(bpb.aov)
+
+anova(lm(log(nhanes$bpb) ~ nhanes$AGE5b))
+pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b)
+pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b, p.adj = "bonf")
+```
+
+# Chi-square and Fisher's tests
+```{r chisq fisher}
+chisq.test(nhanes$sex, nhanes$smk)
+fisher.test(nhanes$race, nhanes$htn)
+```
+
+# Odds Ratios
+```{r odds ratio}
+tab1(nhanes$htn)
+tabpct(nhanes$race, nhanes$htn)
+cc(nhanes$race, nhanes$htn)
+```
+
+# Mantel-Haenszel Odds Ratio
+```{r mh odds ratio}
+cc(nhanes$htn, nhanes$sex1)
+tabpct(nhanes$race, nhanes$sex1)
+tabpct(nhanes$htn, nhanes$sex1)
+
+mhor(nhanes$htn, nhanes$race, nhanes$sex1)
+```
+
+# Do Exercise 4
