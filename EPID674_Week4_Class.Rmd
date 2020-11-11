@@ -128,14 +128,16 @@ pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b, p.adj = "bonf")
 
 # Chi-square and Fisher's tests
 ```{r chisq fisher}
+tabpct(nhanes$sex, nhanes$smk)
 chisq.test(nhanes$sex, nhanes$smk)
+
+tab1(nhanes$htn)
+tabpct(nhanes$race, nhanes$htn)
 fisher.test(nhanes$race, nhanes$htn)
 ```
 
 # Odds Ratios
 ```{r odds ratio}
-tab1(nhanes$htn)
-tabpct(nhanes$race, nhanes$htn)
 cc(nhanes$race, nhanes$htn)
 ```
 
