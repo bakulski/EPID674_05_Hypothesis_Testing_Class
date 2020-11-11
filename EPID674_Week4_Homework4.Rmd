@@ -1,6 +1,6 @@
 ---
 title: "EPID674 Epidemiologic Data Analysis using R"
-subtitle: "Homework 3A"
+subtitle: "Homework 4"
 author: "Insert Your Name Here"
 date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
 output:
