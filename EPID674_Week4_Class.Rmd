@@ -1,5 +1,6 @@
 ---
 title: "EPID674 Epidemiologic Data Analysis using R"
+subtitle: "Hypothesis Testing in R"
 author: "Kelly Bakulski"
 date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
 output:
@@ -8,16 +9,13 @@ output:
   html_document:
     toc: yes
     toc_float: yes
-subtitle: Hypothesis Testing in R
 ---
 
-## Chapter 4, Hypothesis Testing with R
-
-# Set up options
+### Set up options
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Install new packages
+### Install new packages
 ```{r install_packages, eval=FALSE}
 # Install packages. Do this only once. 
 options(repos="https://cran.rstudio.com" )
@@ -28,8 +26,8 @@ install.packages("corrplot")
 # To avoid installing every time: change set up in curly brackets to eval=FALSE
 ```
 
-# Load packages
-```{r load_packages, include=FALSE}
+### Load packages
+```{r load_packages, message=FALSE}
 ##### Load these packages for the current session
 library(epiDisplay)
 library(Hmisc)
@@ -37,14 +35,14 @@ library(corrplot)
 ```
 
 
-# Specify file directory
+### Specify file directory
 ```{r directories}
 directory <- "/cloud/project" # Class option when coding on RStudio Cloud
 # Specify the appropriate directory if you're working on a personal computer
 ```
 
 
-# Load data, remake useful variables
+### Load data, remake useful variables
 ```{r load_data}
 
 # Check the file path
@@ -64,7 +62,7 @@ nhanes <- cbind(nhanes, sex1, AGE5b, AGE5c, age5c)
 
 # Basic statistical tests in R
 
-# Remember to check your distributions/assumptions
+### Remember to check your distributions/assumptions
 ```{r histograms_continuous}
 hist(nhanes$dbp)
 hist(nhanes$bpb)
@@ -76,13 +74,13 @@ for (i in 1:ncol(nhanes)) {
 ```
 
 
-# Correlation tests
+### Correlation tests
 ```{r correlation_tests}
 cor.test(nhanes$age, nhanes$bmi)
 cor.test(nhanes$age, nhanes$bpb, method = "spearman")
 ```
 
-# Correlation matrices
+### Correlation matrices
 ```{r correlation_matrix}
 nhanes.d <- nhanes[, c("age", "bmi", "bpb", "sbp")]
 cor(nhanes.d, use="complete")
@@ -95,14 +93,14 @@ cor(nhanes.e)
 corrplot.mixed(cor(nhanes.e), upper = "ellipse", lower = "number")
 ```
 
-# T-test and Wilcoxon test
+### T-test and Wilcoxon test
 ```{r ttest_wilcoxon} 
 t.test(nhanes$dbp ~ nhanes$sex1)
 wilcox.test(nhanes$bpb ~ nhanes$sex1)
 t.test(log(nhanes$bpb) ~ nhanes$sex1, var.equal = T)
 ```
 
-# ANOVA
+### ANOVA
 ```{r anova}
 tapply(log(nhanes$bpb), nhanes$AGE5b, mean)
 
@@ -115,20 +113,20 @@ pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b)
 pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b, p.adj = "bonferroni")
 ```
 
-# Chi-square and Fisher's tests
+### Chi-square and Fisher's tests
 ```{r chisq_fisher}
 chisq.test(nhanes$sex, nhanes$smk)
 fisher.test(nhanes$race, nhanes$htn)
 ```
 
-# Odds Ratios
+### Odds Ratios
 ```{r odds_ratio}
 tab1(nhanes$htn)
 tabpct(nhanes$race, nhanes$htn)
 cc(nhanes$race, nhanes$htn)
 ```
 
-# Mantel-Haenszel Odds Ratio
+### Mantel-Haenszel Odds Ratio
 ```{r mh_odds_ratio}
 cc(nhanes$htn, nhanes$sex1)
 tabpct(nhanes$race, nhanes$sex1)
