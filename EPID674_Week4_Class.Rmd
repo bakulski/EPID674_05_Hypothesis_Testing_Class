@@ -4,22 +4,20 @@ subtitle: "Hypothesis Testing in R"
 author: "Kelly Bakulski"
 date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
 output:
-   word_document: default
-   html_document: 
-    toc: true
-    toc_float: true
+  word_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float: yes
 ---
 
-## Chapter 4, Hypothesis Testing with R
-
-# Set up options
+### Set up options
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Install new packages
-```{r install packages, eval=FALSE}
-
-# Install packages. Do this only once.
+### Install new packages
+```{r install_packages, eval=FALSE}
+# Install packages. Do this only once. 
 options(repos="https://cran.rstudio.com" )
 install.packages("epiDisplay")
 install.packages("Hmisc")
@@ -28,8 +26,8 @@ install.packages("corrplot")
 # To avoid installing every time: change set up in curly brackets to eval=FALSE
 ```
 
-# Load packages
-```{r load packages, include=FALSE}
+### Load packages
+```{r load_packages, message=FALSE}
 ##### Load these packages for the current session
 library(epiDisplay)
 library(Hmisc)
@@ -37,28 +35,21 @@ library(corrplot)
 ```
 
 
-# Specify file directories
+### Specify file directory
 ```{r directories}
-directory <- "/cloud/project/" #Class option when coding on RStudio Cloud
-
-# Three alternate options to customize and specify source data directory if programming on a personal computer (only need to do the one that works for you)
-# directory<-"M:/EPID674/Data/" # Alternate option 1: location of the parent dataset in afs space of school computer
-# directory <- "/Volumes/GoogleDrive/My Drive/Teaching/EPID674/2020_fall/EPID674_Week4_Class/" # Alternate option 2: location of data on my Macbook
-# directory<-"C:/Users/bakulski/Documents/EPID674/Data/" #Alternate option 3: location of data on a personal PC
-
-date <- format(Sys.Date(), "%Y%m%d")
+directory <- "/cloud/project" # Class option when coding on RStudio Cloud
+# Specify the appropriate directory if you're working on a personal computer
 ```
 
 
-# Load data, remake useful variables
-```{r read data}
+### Load data, remake useful variables
+```{r load_data}
 
 # Check the file path
-paste0(directory, "nhanes3.rda")
+file.path(directory, "nhanes3.rda")
 # Load the saved R data
-load(paste0(directory, "nhanes3.rda"))
-### Or load RData if you saved the workspace image
-# load(".RData")
+load(file.path(directory, "nhanes3.rda"))
+
 
 
 # Remake a few variables from last class if they are no longer in your environment
@@ -71,8 +62,8 @@ nhanes <- cbind(nhanes, sex1, AGE5b, AGE5c, age5c)
 
 # Basic statistical tests in R
 
-# Remember to check your distributions/assumptions
-```{r histograms continuous}
+### Remember to check your distributions/assumptions
+```{r histograms_continuous}
 hist(nhanes$dbp)
 hist(nhanes$bpb)
 for (i in 1:ncol(nhanes)) {
@@ -83,37 +74,33 @@ for (i in 1:ncol(nhanes)) {
 ```
 
 
-# Correlation tests
-```{r correlation tests}
+### Correlation tests
+```{r correlation_tests}
 cor.test(nhanes$age, nhanes$bmi)
 cor.test(nhanes$age, nhanes$bpb, method = "spearman")
 ```
 
-# Correlation matrices
-```{r correlation matrix}
-nhanes.d <- cbind(nhanes$age, nhanes$bmi, nhanes$bpb, nhanes$sbp)
-rcorr(nhanes.d)
-rcorr(nhanes.d, type = "spearman")
+### Correlation matrices
+```{r correlation_matrix}
+nhanes.d <- nhanes[, c("age", "bmi", "bpb", "sbp")]
+cor(nhanes.d, use="complete")
 
-corrplot(cor(nhanes.d))
+corrplot.mixed(cor(nhanes.d, use="complete"), upper = "ellipse", lower = "number")
+corrplot.mixed(cor(nhanes.d, use="complete", method="spearman"), upper = "ellipse", lower = "number")
 
 nhanes.e <- na.omit(nhanes[, c("age", "bmi", "bpb", "sbp")])
 cor(nhanes.e)
-nhanes.f <- cbind(nhanes.e$age, nhanes.e$bmi, nhanes.e$bpb, nhanes.e$sbp)
-rcorr(nhanes.f)
-rcorr(nhanes.f, type = "spearman")
-
-corrplot.mixed(cor(nhanes.f), upper = "ellipse", lower = "number")
+corrplot.mixed(cor(nhanes.e), upper = "ellipse", lower = "number")
 ```
 
-# T-test and Wilcoxon test
-```{r ttest wilcoxon} 
+### T-test and Wilcoxon test
+```{r ttest_wilcoxon} 
 t.test(nhanes$dbp ~ nhanes$sex1)
 wilcox.test(nhanes$bpb ~ nhanes$sex1)
 t.test(log(nhanes$bpb) ~ nhanes$sex1, var.equal = T)
 ```
 
-# ANOVA
+### ANOVA
 ```{r anova}
 tapply(log(nhanes$bpb), nhanes$AGE5b, mean)
 
@@ -123,12 +110,13 @@ anova(bpb.aov)
 
 anova(lm(log(nhanes$bpb) ~ nhanes$AGE5b))
 pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b)
-pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b, p.adj = "bonf")
+pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b, p.adj = "bonferroni")
 ```
 
 # Chi-square and Fisher's tests
-```{r chisq fisher}
+```{r chisq_fisher}
 tabpct(nhanes$sex, nhanes$smk)
+
 chisq.test(nhanes$sex, nhanes$smk)
 
 tab1(nhanes$htn)
@@ -136,13 +124,17 @@ tabpct(nhanes$race, nhanes$htn)
 fisher.test(nhanes$race, nhanes$htn)
 ```
 
+
+
 # Odds Ratios
-```{r odds ratio}
+```{r odds_ratio}
+tab1(nhanes$htn)
+tabpct(nhanes$race, nhanes$htn)
 cc(nhanes$race, nhanes$htn)
 ```
 
-# Mantel-Haenszel Odds Ratio
-```{r mh odds ratio}
+### Mantel-Haenszel Odds Ratio
+```{r mh_odds_ratio}
 cc(nhanes$htn, nhanes$sex1)
 tabpct(nhanes$race, nhanes$sex1)
 tabpct(nhanes$htn, nhanes$sex1)
