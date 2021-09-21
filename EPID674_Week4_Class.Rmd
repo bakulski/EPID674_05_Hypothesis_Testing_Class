@@ -11,19 +11,17 @@ output:
     toc_float: yes
 ---
 
-### Set up options
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 ### Install new packages
-```{r install_packages, eval=FALSE}
+```{r install_packages, eval=FALSE, include=FALSE}
 # Install packages. Do this only once. 
 options(repos="https://cran.rstudio.com" )
 install.packages("epiDisplay")
 install.packages("Hmisc")
 install.packages("corrplot")
+install.packages("here")
+install.packages("tidyverse")
 
-# To avoid installing every time: change set up in curly brackets to eval=FALSE
+# To avoid installing every time: in curly brackets set eval=FALSE
 ```
 
 ### Load packages
@@ -32,24 +30,17 @@ install.packages("corrplot")
 library(epiDisplay)
 library(Hmisc)
 library(corrplot)
-```
-
-
-### Specify file directory
-```{r directories}
-directory <- "/cloud/project" # Class option when coding on RStudio Cloud
-# Specify the appropriate directory if you're working on a personal computer
+library(here)
+library(tidyverse)
 ```
 
 
 ### Load data, remake useful variables
 ```{r load_data}
-
 # Check the file path
-file.path(directory, "nhanes3.rda")
+here("nhanes3.rda")
 # Load the saved R data
-load(file.path(directory, "nhanes3.rda"))
-
+load(here("nhanes3.rda"))
 
 
 # Remake a few variables from last class if they are no longer in your environment
@@ -95,30 +86,47 @@ corrplot.mixed(cor(nhanes.e), upper = "ellipse", lower = "number")
 
 ### T-test and Wilcoxon test
 ```{r ttest_wilcoxon} 
-t.test(nhanes$dbp ~ nhanes$sex1)
+# The relationship between sex and diastolic blood pressure:
+# What do you expect?
+nhanes %>%
+  group_by(sex1) %>%
+  summarise(mean_dbp=mean(dbp))
+
+t.test(nhanes$dbp ~ nhanes$sex1) #What do you get? 
+#Do they match?
+
+# The relationship between sex and blood Pb:
+nhanes %>%
+  group_by(sex1) %>%
+  summarise(mean_bpb=mean(bpb), mean_log_bpb=mean(log(bpb)))
+
 wilcox.test(nhanes$bpb ~ nhanes$sex1)
-t.test(log(nhanes$bpb) ~ nhanes$sex1, var.equal = T)
+t.test(log(nhanes$bpb) ~ nhanes$sex1)
 ```
 
 ### ANOVA
 ```{r anova}
-tapply(log(nhanes$bpb), nhanes$AGE5b, mean)
+# The relationship between age and blood Pb:
+nhanes %>%
+  group_by(AGE5b) %>%
+  summarise(mean_bpb=mean(bpb), mean_log_bpb=mean(log(bpb)))
 
 aov(log(nhanes$bpb) ~ nhanes$AGE5b)
-bpb.aov <- aov(log(nhanes$bpb) ~ nhanes$AGE5b)
-anova(bpb.aov)
+anova(aov(log(nhanes$bpb) ~ nhanes$AGE5b))
+# How do we interpret the p-value from an anova test?
 
-anova(lm(log(nhanes$bpb) ~ nhanes$AGE5b))
 pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b)
 pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b, p.adj = "bonferroni")
 ```
 
 # Chi-square and Fisher's tests
 ```{r chisq_fisher}
-tabpct(nhanes$sex, nhanes$smk)
+# The relationship between sex and smoking:
+tabpct(nhanes$sex1, nhanes$smk)
 
-chisq.test(nhanes$sex, nhanes$smk)
+chisq.test(nhanes$sex1, nhanes$smk)
 
+# The relationship between race and hypertension:
 tab1(nhanes$htn)
 tabpct(nhanes$race, nhanes$htn)
 fisher.test(nhanes$race, nhanes$htn)
