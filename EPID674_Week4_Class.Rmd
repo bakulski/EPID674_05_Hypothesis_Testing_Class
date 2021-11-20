@@ -16,10 +16,10 @@ output:
 # Install packages. Do this only once. 
 options(repos="https://cran.rstudio.com" )
 install.packages("epiDisplay")
-install.packages("Hmisc")
 install.packages("corrplot")
 install.packages("here")
 install.packages("tidyverse")
+install.packages("infer")
 
 # To avoid installing every time: in curly brackets set eval=FALSE
 ```
@@ -27,39 +27,36 @@ install.packages("tidyverse")
 ### Load packages
 ```{r load_packages, message=FALSE}
 ##### Load these packages for the current session
-library(epiDisplay)
-library(Hmisc)
-library(corrplot)
 library(here)
 library(tidyverse)
+library(ggcorrplot)
+library(corrplot)
+library(infer)
+library(epiDisplay)
 ```
 
 
-### Load data, remake useful variables
+# Load data
 ```{r load_data}
 # Check the file path
-here("nhanes3.rda")
+here("nhanes_dataset.rda")
 # Load the saved R data
-load(here("nhanes3.rda"))
-
-
-# Remake a few variables from last class if they are no longer in your environment
-sex1 <- factor(nhanes$sex, levels = c(1, 2), labels = c("male", "female"))
-AGE5b <- cut(nhanes$age, quantile(nhanes$age, c(0, .2, .4, .6, .8, 1)), include.lowest = T) # quintiles
-AGE5c <- cut(nhanes$age, breaks = c(19, 40, 50, 60, 70, 90))
-age5c <- unclass(AGE5c)
-nhanes <- cbind(nhanes, sex1, AGE5b, AGE5c, age5c)
+load(here("nhanes_dataset.rda"))
 ```
+
 
 # Basic statistical tests in R
 
 ### Remember to check your distributions/assumptions
 ```{r histograms_continuous}
-hist(nhanes$dbp)
-hist(nhanes$bpb)
-for (i in 1:ncol(nhanes)) {
-  if(is.numeric(nhanes[,i])==T) {
-     hist(nhanes[, i], main = colnames(nhanes)[i])
+
+# Make a simple base R histogram
+hist(nhanes_dataset$LBXIRN)
+
+# For loop to make histograms of all numeric variables in dataset
+for (i in 1:ncol(nhanes_dataset)) {
+  if(is.numeric(nhanes_dataset[,i])==T) {
+     hist(nhanes_dataset[, i], main = colnames(nhanes_dataset)[i])
     }
 }
 ```
@@ -67,87 +64,165 @@ for (i in 1:ncol(nhanes)) {
 
 ### Correlation tests
 ```{r correlation_tests}
-cor.test(nhanes$age, nhanes$bmi)
-cor.test(nhanes$age, nhanes$bpb, method = "spearman")
+# Correlation test between two continuous variables (default is Pearson)
+cor.test(nhanes_dataset$RIDAGEYR, nhanes_dataset$INDFMPIR)
+
+cor.test(nhanes_dataset$RIDAGEYR, nhanes_dataset$INDFMPIR, method = "spearman")
 ```
 
-### Correlation matrices
+
+### Correlation matrix
 ```{r correlation_matrix}
-nhanes.d <- nhanes[, c("age", "bmi", "bpb", "sbp")]
-cor(nhanes.d, use="complete")
+# Select the columns with chemicals
+nhanes_chems <- nhanes_dataset %>%
+  select(LBXIRN,
+         LBXCOT,
+         LBXBCD,
+         LBXBPB,
+         LBXWBCSI,
+         LBXRBCSI)
 
-corrplot.mixed(cor(nhanes.d, use="complete"), upper = "ellipse", lower = "number")
-corrplot.mixed(cor(nhanes.d, use="complete", method="spearman"), upper = "ellipse", lower = "number")
+# Calculate the correlations
+chem_correlations <- cor(nhanes_chems,
+                         use = "pairwise.complete.obs",
+                         method = "spearman")
 
-nhanes.e <- na.omit(nhanes[, c("age", "bmi", "bpb", "sbp")])
-cor(nhanes.e)
-corrplot.mixed(cor(nhanes.e), upper = "ellipse", lower = "number")
+# View the correlation matrix
+View(chem_correlations)
+
+# Plot the correlations with ggcorrplot
+ggcorrplot(chem_correlations,
+           type = "lower",
+           outline.col = "white",
+           lab = TRUE)
+
+# Plot the correlations with corrplot
+corrplot.mixed(cor(nhanes_chems,
+                   use="complete",
+                   method="spearman"),
+               upper = "ellipse",
+               lower = "number")
 ```
 
 ### T-test and Wilcoxon test
 ```{r ttest_wilcoxon} 
-# The relationship between sex and diastolic blood pressure:
+# The relationship between sex and iron concentration:
 # What do you expect?
-nhanes %>%
-  group_by(sex1) %>%
-  summarise(mean_dbp=mean(dbp))
 
-t.test(nhanes$dbp ~ nhanes$sex1) #What do you get? 
-#Do they match?
+# Calculate mean of iron concentration by sex
+nhanes_dataset %>%
+  group_by(sex) %>%
+  summarise(mean_iron = mean(LBXIRN, na.rm = TRUE)) %>%
+  ungroup()
+
+# T-test of iron and sex
+t.test(nhanes_dataset$LBXIRN ~ nhanes_dataset$sex) #What do you get? 
+# Do they match?
+
+
 
 # The relationship between sex and blood Pb:
-nhanes %>%
-  group_by(sex1) %>%
-  summarise(mean_bpb=mean(bpb), mean_log_bpb=mean(log(bpb)))
+nhanes_dataset %>%
+  group_by(sex) %>%
+  summarise(mean_lead = mean(LBXBPB, na.rm = TRUE),
+            mean_log_lead = mean(log10(LBXBPB), na.rm = TRUE)) %>%
+  ungroup()
 
-wilcox.test(nhanes$bpb ~ nhanes$sex1)
-t.test(log(nhanes$bpb) ~ nhanes$sex1)
+# T-test
+t.test(log10(nhanes_dataset$LBXBPB) ~ nhanes_dataset$sex)
+
+# Wilcoxon test
+wilcox.test(nhanes_dataset$LBXBPB ~ nhanes_dataset$sex)
 ```
 
 ### ANOVA
 ```{r anova}
 # The relationship between age and blood Pb:
-nhanes %>%
-  group_by(AGE5b) %>%
-  summarise(mean_bpb=mean(bpb), mean_log_bpb=mean(log(bpb)))
+nhanes_dataset %>%
+  group_by(cut_groups) %>%
+  summarise(mean_lead = mean(LBXBPB, na.rm = TRUE),
+            mean_log_lead = mean(log10(LBXBPB), na.rm = TRUE)) %>%
+  ungroup()
 
-aov(log(nhanes$bpb) ~ nhanes$AGE5b)
-anova(aov(log(nhanes$bpb) ~ nhanes$AGE5b))
-# How do we interpret the p-value from an anova test?
+# ANOVA test
+aov(log10(nhanes_dataset$LBXIRN) ~ nhanes_dataset$cut_groups)
+anova(aov(log10(nhanes_dataset$LBXIRN) ~ nhanes_dataset$cut_groups))
+# How do we interpret the p-value from an ANOVA test?
 
-pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b)
-pairwise.t.test(log(nhanes$bpb), nhanes$AGE5b, p.adj = "bonferroni")
+# Pairwise t-test
+pairwise.t.test(log10(nhanes_dataset$LBXIRN), nhanes_dataset$cut_groups)
+
+# Pairwise t-test with bonferroni adjustment
+pairwise.t.test(log10(nhanes_dataset$LBXIRN), nhanes_dataset$cut_groups,
+                p.adj = "bonferroni")
 ```
 
 # Chi-square and Fisher's tests
 ```{r chisq_fisher}
-# The relationship between sex and smoking:
-tabpct(nhanes$sex1, nhanes$smk)
+# The relationship between sex and education:
+tabpct(nhanes_dataset$sex, nhanes_dataset$education)
 
-chisq.test(nhanes$sex1, nhanes$smk)
+# Chi-square test (tidyverse)
+chisq_test(nhanes_dataset, sex ~ education)
+# Chi-square test (base)
+chisq.test(nhanes_dataset$sex, nhanes_dataset$education)
 
-# The relationship between race and hypertension:
-tab1(nhanes$htn)
-tabpct(nhanes$race, nhanes$htn)
-fisher.test(nhanes$race, nhanes$htn)
+# The relationship between race and education:
+tab1(nhanes_dataset$education)
+tabpct(nhanes_dataset$race_eth, nhanes_dataset$education)
+# fisher.test(nhanes_dataset$race_eth, nhanes_dataset$sex)
 ```
 
 
 
 # Odds Ratios
 ```{r odds_ratio}
-tab1(nhanes$htn)
-tabpct(nhanes$race, nhanes$htn)
-cc(nhanes$race, nhanes$htn)
+tab1(nhanes_dataset$LBXIRN)
+tabpct(nhanes_dataset$race_eth, nhanes_dataset$education)
+cc(nhanes_dataset$race, nhanes_dataset$education)
 ```
+
+
+
+
+# Create fake data for odds ratio results
+```{r setup_data_for_forestplot}
+## Assuming that you obtained ORs for all and by gender and race.
+## Let's create a data frame for these ORs and 95% CIs.
+
+x_num <- c(1, 3, 4, 6, 7)
+x1 <- c("Overall", "Male", "Female", "White", "Black")
+or <- c(1.5, 1.1, 2.0, 1.4, 1.6)
+or_lower_lim <- c(1.2, 0.9, 1.65, 0.95, 1.3)
+or_upper_lim <- c(1.85, 1.35, 2.4, 2.05, 2.0)
+results <- data.frame(x_num, x1, or, or_lower_lim, or_upper_lim)
+results$x1 <- factor(results$x1,
+                     levels = results$x1)
+```
+
+
+```{r forest_plot_ggplot2}
+# Forest plot, ggplot2 package
+ggplot(results,
+       aes(x = or,
+           y = x1,
+           xmin = or_lower_lim,
+           xmax = or_upper_lim)) +
+  geom_pointrange() +
+  xlab("Odds Ratio") +
+  ylab("Group") +
+  geom_vline(xintercept = 1,
+             linetype = 2)
+```
+
 
 ### Mantel-Haenszel Odds Ratio
 ```{r mh_odds_ratio}
-cc(nhanes$htn, nhanes$sex1)
-tabpct(nhanes$race, nhanes$sex1)
-tabpct(nhanes$htn, nhanes$sex1)
+cc(nhanes_dataset$htn, nhanes_dataset$sex1)
+tabpct(nhanes_dataset$race, nhanes_dataset$sex1)
+tabpct(nhanes_dataset$htn, nhanes_dataset$sex1)
 
-mhor(nhanes$htn, nhanes$race, nhanes$sex1)
+mhor(nhanes_dataset$htn, nhanes_dataset$race, nhanes_dataset$sex1)
 ```
 
 # Do Exercise 4
