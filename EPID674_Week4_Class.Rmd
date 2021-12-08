@@ -215,14 +215,4 @@ ggplot(results,
              linetype = 2)
 ```
 
-
-### Mantel-Haenszel Odds Ratio
-```{r mh_odds_ratio}
-cc(nhanes_dataset$htn, nhanes_dataset$sex1)
-tabpct(nhanes_dataset$race, nhanes_dataset$sex1)
-tabpct(nhanes_dataset$htn, nhanes_dataset$sex1)
-
-mhor(nhanes_dataset$htn, nhanes_dataset$race, nhanes_dataset$sex1)
-```
-
 # Do Exercise 4
