@@ -1,7 +1,7 @@
 ---
 title: "EPID674 Epidemiologic Data Analysis using R"
 subtitle: "Hypothesis Testing in R"
-author: "Kelly Bakulski"
+author: "Kelly Bakulski and Lauren Middleton"
 date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
 output:
   word_document:
@@ -30,8 +30,7 @@ install.packages("infer")
 library(here)
 library(tidyverse)
 library(ggcorrplot)
-library(corrplot)
-library(infer)
+library(gtsummary)
 library(epiDisplay)
 ```
 
@@ -57,6 +56,15 @@ hist(nhanes_dataset$LBXIRN)
 for (i in 1:ncol(nhanes_dataset)) {
   if(is.numeric(nhanes_dataset[,i])==T) {
      hist(nhanes_dataset[, i], main = colnames(nhanes_dataset)[i])
+    }
+}
+
+#ggplot version - doesn't work
+for (i in 1:ncol(nhanes_dataset)) {
+  if(is.numeric(nhanes_dataset[,i])==T) {
+     print(ggplot(nhanes_dataset, aes(i)) +
+             geom_histogram() +
+             labs(title = colnames(nhanes_dataset)[i]))
     }
 }
 ```
@@ -95,13 +103,6 @@ ggcorrplot(chem_correlations,
            type = "lower",
            outline.col = "white",
            lab = TRUE)
-
-# Plot the correlations with corrplot
-corrplot.mixed(cor(nhanes_chems,
-                   use="complete",
-                   method="spearman"),
-               upper = "ellipse",
-               lower = "number")
 ```
 
 ### T-test and Wilcoxon test
@@ -157,37 +158,83 @@ pairwise.t.test(log10(nhanes_dataset$LBXIRN), nhanes_dataset$cut_groups,
                 p.adj = "bonferroni")
 ```
 
-# Chi-square and Fisher's tests
+# Chi-square test
 ```{r chisq_fisher}
 # The relationship between sex and education:
-tabpct(nhanes_dataset$sex, nhanes_dataset$education)
+nhanes_dataset %>%
+  select(sex,
+         education) %>%
+  tbl_summary(by = sex, #stratify by sex
+              label = list(sex  ~ "Sex"),
+              statistic = list(all_categorical() ~ "{n} ({p}%)"), #row percentages
+              digits = list(all_categorical() ~ c(0, 1)),
+              missing_text = "Missing (n)"
+              ) %>%
+  add_p() %>%
+  modify_header(label ~ "**Variable**") %>%
+  bold_labels()
 
-# Chi-square test (tidyverse)
+
+# Chi-square test
 chisq_test(nhanes_dataset, sex ~ education)
-# Chi-square test (base)
-chisq.test(nhanes_dataset$sex, nhanes_dataset$education)
+```
 
-# The relationship between race and education:
-tab1(nhanes_dataset$education)
-tabpct(nhanes_dataset$race_eth, nhanes_dataset$education)
-# fisher.test(nhanes_dataset$race_eth, nhanes_dataset$sex)
+#  Fisher's tests
+```{r}
+
+# The relationship between sex and iron status:
+nhanes_dataset %>%
+  select(sex,
+         iron_status) %>%
+  tbl_summary(by = sex, #stratify by sex
+              label = list(sex ~ "Sex"),
+              statistic = list(all_categorical() ~ "{n} ({p}%)"), #row percentages
+              digits = list(all_categorical() ~ c(0, 1)),
+              missing_text = "Missing (n)"
+              ) %>%
+  add_p() %>%
+  modify_header(label ~ "**Variable**") %>%
+  bold_labels()
+
+# Fisher exact test
+fisher.test(nhanes_dataset$sex, nhanes_dataset$iron_status)
 ```
 
 
 
-# Odds Ratios
+# Odds Ratios from 2x2 table
 ```{r odds_ratio}
-tab1(nhanes_dataset$LBXIRN)
-tabpct(nhanes_dataset$race_eth, nhanes_dataset$education)
-cc(nhanes_dataset$race, nhanes_dataset$education)
+
+# Simplify iron into two categories
+nhanes_dataset_iron <- nhanes_dataset %>%
+  filter(!iron_status == "Excessive") %>%
+  droplevels()
+table(nhanes_dataset_iron$iron_status)
+
+# Iron status levels: normal and deficient and sex
+nhanes_dataset_iron %>%
+  select(sex,
+         iron_status) %>%
+  tbl_summary(by = sex,
+              label = list(sex  ~ "Sex"),
+              statistic = list(all_categorical() ~ "{n} ({p}%)"), #row percentages
+              digits = list(all_categorical() ~ c(0, 1)),
+              missing_text = "Missing (n)"
+              ) %>%
+  modify_header(label ~ "**Variable**") %>%
+  bold_labels()
+
+# calculate odds ratio
+cc(outcome = nhanes_dataset_iron$iron_status,
+   exposure = nhanes_dataset_iron$sex)
 ```
 
 
 
 
-# Create fake data for odds ratio results
+# Create fake data for graphing odds ratio results
 ```{r setup_data_for_forestplot}
-## Assuming that you obtained ORs for all and by gender and race.
+## Assuming that you obtained ORs for all and by sex and race.
 ## Let's create a data frame for these ORs and 95% CIs.
 
 x_num <- c(1, 3, 4, 6, 7)
