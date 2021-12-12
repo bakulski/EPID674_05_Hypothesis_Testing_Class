@@ -1,11 +1,9 @@
 ---
 title: "EPID674 Epidemiologic Data Analysis using R"
 subtitle: "Hypothesis Testing in R"
-author: "Kelly Bakulski and Lauren Middleton"
+author: "Kelly Bakulski, Lauren Middleton"
 date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  word_document:
-    toc: yes
   html_document:
     toc: yes
     toc_float: yes
@@ -140,21 +138,21 @@ wilcox.test(nhanes_dataset$LBXBPB ~ nhanes_dataset$sex)
 ```{r anova}
 # The relationship between age and blood Pb:
 nhanes_dataset %>%
-  group_by(cut_groups) %>%
+  group_by(age_groups) %>%
   summarise(mean_lead = mean(LBXBPB, na.rm = TRUE),
             mean_log_lead = mean(log10(LBXBPB), na.rm = TRUE)) %>%
   ungroup()
 
 # ANOVA test
-aov(log10(nhanes_dataset$LBXIRN) ~ nhanes_dataset$cut_groups)
-anova(aov(log10(nhanes_dataset$LBXIRN) ~ nhanes_dataset$cut_groups))
+aov(log10(nhanes_dataset$LBXIRN) ~ nhanes_dataset$age_groups)
+anova(aov(log10(nhanes_dataset$LBXIRN) ~ nhanes_dataset$age_groups))
 # How do we interpret the p-value from an ANOVA test?
 
 # Pairwise t-test
-pairwise.t.test(log10(nhanes_dataset$LBXIRN), nhanes_dataset$cut_groups)
+pairwise.t.test(log10(nhanes_dataset$LBXIRN), nhanes_dataset$age_groups)
 
 # Pairwise t-test with bonferroni adjustment
-pairwise.t.test(log10(nhanes_dataset$LBXIRN), nhanes_dataset$cut_groups,
+pairwise.t.test(log10(nhanes_dataset$LBXIRN), nhanes_dataset$age_groups,
                 p.adj = "bonferroni")
 ```
 
@@ -262,4 +260,3 @@ ggplot(results,
              linetype = 2)
 ```
 
-# Do Exercise 4
