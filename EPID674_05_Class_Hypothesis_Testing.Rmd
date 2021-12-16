@@ -125,11 +125,10 @@ ggcorrplot(chem_correlations,
            outline.col = "white",
            lab = TRUE)
 
-cor.test(nhanes_dataset$URXUAS, nhanes_dataset$nlr, method="spearman")
 ```
 
 ## Check your understanding
-What is the relationship between urinary arsenic (LBXUAS) and neutrophil/lymphocyte ratio (nlr)? 
+What is the relationship between urinary arsenic (URXUAS) and neutrophil/lymphocyte ratio (nlr)? 
 * Make a new code chunk
 * What type of variables are they? What are their distributions?
 * What is the appropriate test to run?
