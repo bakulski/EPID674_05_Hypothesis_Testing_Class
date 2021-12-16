@@ -1,0 +1,63 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+nhanes_dataset %>%
+  ggplot(aes(x = LBXIRN)) + 
+  geom_histogram() + 
+  labs(x="Blood iron levels (ug/dL)")+
+  theme(axis.title = element_text(size=20))
+
+nhanes_dataset %>%
+  ggplot(aes(x = LBXRBCSI)) + 
+  geom_histogram() + 
+  labs(x="Red blood cell number (millions/uL)")+
+  theme(axis.title = element_text(size=20))
+
+nhanes_dataset %>%
+  ggplot(aes(x = log(LBXBPB))) + 
+  geom_histogram() + 
+  labs(x="Log of blood lead levels (ug/dL)") +
+  theme(axis.title = element_text(size=20))
+
+
+nhanes_dataset %>%
+  ggplot(aes(x = LBXBPB)) + 
+  geom_histogram() + 
+  labs(x="Blood lead levels (ug/dL)") +
+  theme(axis.title = element_text(size=20))
+```
+
+
+```{r}
+cor.test(nhanes_dataset$RIDAGEYR, nhanes_dataset$LBXBPB, method = "spearman")
+
+t.test(nhanes_dataset$LBXRBCSI ~ nhanes_dataset$sex)
+```
+
+```{r}
+anova(aov(nhanes_dataset$LBXRBCSI ~ nhanes_dataset$age_groups))
+
+anova(aov(nhanes_dataset$LBXRBCSI ~ nhanes_dataset$education))
+```
+
+```{r}
+nhanes_dataset %>%
+fisher.test(sex, iron_status)
+
+fisher.test(nhanes_dataset$sex, nhanes_dataset$iron_status)
+
+cc(outcome = nhanes_dataset$iron_status,
+   exposure = nhanes_dataset$sex)
+cc(outcome = relevel(nhanes_dataset$iron_status, ref="Normal"),
+   exposure = nhanes_dataset$sex)
+```
+
