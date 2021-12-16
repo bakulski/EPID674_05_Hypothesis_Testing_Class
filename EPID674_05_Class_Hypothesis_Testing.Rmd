@@ -300,14 +300,13 @@ cc(outcome = relevel(nhanes_dataset_iron$iron_status, ref= "Normal"),
 ## Assuming that you obtained ORs and want to compare the results to what was found in other studies.
 ## Let's create a data frame for these ORs and 95% CIs.
 
-x_num <- c(1, 3, 4, 6, 7)
-x1 <- c("Overall", "Study 1", "Study 2", "Study 3", "Study 4")
+study <- c("Overall", "Study 1", "Study 2", "Study 3", "Study 4")
 or <- c(1.5, 1.1, 2.0, 1.4, 1.6)
 or_lower_lim <- c(1.2, 0.9, 1.65, 0.95, 1.3)
 or_upper_lim <- c(1.85, 1.35, 2.4, 2.05, 2.0)
-results <- data.frame(x_num, x1, or, or_lower_lim, or_upper_lim)
-results$x1 <- factor(results$x1,
-                     levels = results$x1)
+results <- data.frame(study, or, or_lower_lim, or_upper_lim)
+results$study <- factor(results$study,
+                     levels = results$study)
 ```
 
 
@@ -317,7 +316,7 @@ results$x1 <- factor(results$x1,
 # Forest plot, ggplot2 package
 ggplot(results,
        aes(x = or,
-           y = x1,
+           y = study,
            xmin = or_lower_lim,
            xmax = or_upper_lim)) +
   geom_pointrange() +
