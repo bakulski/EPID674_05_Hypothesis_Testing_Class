@@ -274,10 +274,6 @@ nhanes_dataset_iron <- nhanes_dataset %>%
 table(nhanes_dataset_iron$iron_status)
 levels(nhanes_dataset$iron_status)
 levels(nhanes_dataset_iron$iron_status)
-
-nhanes_dataset_iron <- nhanes_dataset_iron %>%
-  relevel(iron_status, ref = "Normal")
-str(nhanes_dataset_iron$iron_status)
     
 # The relationship between iron status (normal and deficient) and sex
 
@@ -292,7 +288,7 @@ nhanes_dataset_iron %>%
   bold_labels()
 
 # Calculate odds ratio
-cc(outcome = nhanes_dataset_iron$iron_status,
+cc(outcome = relevel(nhanes_dataset_iron$iron_status, ref= "Normal"),
    exposure = nhanes_dataset_iron$sex)
 
 ```
