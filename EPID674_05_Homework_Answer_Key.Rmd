@@ -1,0 +1,185 @@
+---
+title: "EPID 674: Data Management in R"
+subtitle: "Homework 5 Answer Key"
+author: "Kelly Bakulski"
+date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load packages
+
+```{r load_packages, echo=T, results='hide', message=F, warning=F}
+
+# Load packages for this assignment, do this every time
+library(here)
+library(ggcorrplot)
+library(gtsummary)
+library(epiDisplay)
+library(tidyverse)
+
+```
+
+# Load data
+```{r read_data}
+
+# Load the saved R data
+load(here("nhanes_homework.rda"))
+```
+
+
+
+# 1. Test association between age group and cognition score
+
+### Test the association between age group (variable: age_group) and digit symbol substitution test score (variable: CFDDS).
+
+```{r age_group}
+
+# Independent variable: age_groups
+# Check frequency in each category
+table(nhanes_homework$age_groups)
+
+# Dependent variable: CFDDS
+# Check to see if normally distributed
+ggplot(nhanes_homework, 
+       aes(x = CFDDS)) +
+  geom_histogram()
+# Yes, reasonably normally distributed, can proceed with parametric test
+
+# What do you expect to observe in the ANOVA?
+nhanes_homework %>%
+  group_by(age_groups) %>%
+  summarise(mean_cog = mean(CFDDS, na.rm = TRUE)) %>%
+  ungroup()
+# Expect to see higher cognitive scores in the younger age groups
+
+# ANOVA test
+anova(aov(nhanes_homework$CFDDS ~ nhanes_homework$age_groups))
+
+# Observed an association, can follow up with pairwise t-tests
+pairwise.t.test(nhanes_homework$CFDDS, nhanes_homework$age_groups, p.adjust.method = "bonferroni")
+
+```
+
+Interpret the findings: Given that the digit symbol substitution test outcome variable was a numeric variable with a normal distribution, and the age group exposure variable had 3 or more categories, we performed an ANOVA test. With the ANOVA test, we observed a p-value less than 2.2x10-16, thus we reject the null hypothesis and determine that there is an association between at least one age group and the digit symbol substitution test.
+
+Optional: We followed up with pairwise t-testing (using Bonferroni to account for multiple comparisons) and determined that there are differences in digit symbol substitution test score between all age groups tested, except for when comparing the greater than ages 65-70 group to the ages 70-75 group. 
+
+
+# 2. Test association between sex and cognition score
+
+### Test the association between sex group (variable: sex) and digit symbol substitution test score (variable: CFDDS).
+
+```{r sex_group}
+
+# Independent variable: sex
+# Check frequency in each category
+table(nhanes_homework$sex)
+
+# Dependent variable: CFDDS
+# Already checked in problem 1 and saw was normally distributed
+
+# Can proceed with a parametric test
+
+# What do you expect to observe in the t-test?
+nhanes_homework %>%
+  group_by(sex) %>%
+  summarise(mean_cog = mean(CFDDS, na.rm = TRUE)) %>%
+  ungroup()
+# Expect to see female group with higher cognitive score than the male group in this sample
+
+
+# T-test
+t.test(nhanes_homework$CFDDS ~ nhanes_homework$sex)
+
+```
+
+Interpret the findings: Given that the digit symbol substitution test outcome variable was a numeric variable with a normal distribution, and the sex group exposure variable had 2 categories, we performed a t-test. With the t-test, we observed a p-value of 9x10-8, thus we reject the null hypothesis and determine that there is an association between sex group and the digit symbol substitution test. Females had an average of 4.6 points higher score on the digit symbol subsitution test (95% confidence interval: 2.9, 6.2) than males, thus we reject the null hypothesis. 
+
+
+
+# 3. Test association between serum cotinine levels and cognition score
+
+### Test the association between serum cotinine (variable: LBXCOT) and digit symbol substitution test score (variable: CFDDS).
+
+```{r cotinine}
+
+# Independent variable: LBXCOT
+# Check to see if normally distributed
+ggplot(nhanes_homework, 
+       aes(x = LBXCOT)) +
+  geom_histogram()
+# Highly right skewed
+
+# Log transform and check to see if normally distributed
+ggplot(nhanes_homework, 
+       aes(x = log(LBXCOT))) +
+  geom_histogram()
+# Bimodal distribution, plan to run a non-parametric test
+
+# Dependent variable: CFDDS
+# Already checked in problem 1 and saw was normally distributed
+
+
+# What do you expect to observe in the spearman correlation?
+ggplot(nhanes_homework, 
+       aes(x = LBXCOT,
+           y = CFDDS)) +
+  geom_point() + 
+  geom_smooth()
+# Expect to see higher cognitive scores in the lower cotinine exposure levels
+
+
+# Spearman correlation test
+cor.test(nhanes_homework$LBXCOT, nhanes_homework$CFDDS, method = "spearman")
+
+```
+
+Interpret the findings:  Given that the digit symbol substitution test outcome variable was a numeric variable with a normal distribution, and the serum cotinine exposure variable did not have a normal distribution, we performed a non-parametric spearman correlation test. With the correlation test, we observed a p-value of 4x10-14, thus we reject the null hypothesis. We observed the correlation coefficient, rho, was equal to -0.19, indicating that higher levels of cotinine were associated with lower scores on the digit symbol substitution test.
+
+
+
+# 4. Test association between educational attainment and mild cognitive impairment status
+
+### Test the association between educational attainment (variable: education) and mild cognitive impairment status (variable: MCI).
+
+```{r educational_attainment}
+
+# Independent variable: education
+# Check frequency in each category
+table(nhanes_homework$education)
+
+# Dependent variable: cognitive status: MCI
+# Check to see if normally distributed
+table(nhanes_homework$MCI)
+
+# Proceed with a parametric test
+
+# What relationship do we expect to observe?
+nhanes_homework %>%
+  dplyr::select(MCI,
+         education) %>%
+  tbl_summary(by = MCI, #stratify by sex
+              digits = list(all_categorical() ~ c(0, 1)),
+              missing_text = "Missing (n)"
+              ) 
+# Expect to see a higher proportion of cognitive impairment cases in the lowest educational attainment group
+
+# Chi-squared test
+chisq.test(x = nhanes_homework$education, y = nhanes_homework$MCI)
+
+# Or perform an odds ratio test
+cc(outcome = nhanes_homework$MCI, exposure = nhanes_homework$education)
+
+```
+
+Interpret the findings: Given that the cognitive status outcome variable was a categorical variable with 2 levels, and the educational attainment exposure variable had 3 categories, and our expected values in each cell of the table was greater than 5, we performed a chi-squared test. With the chi-square test, we observed a p-value of less than 2x10-16, thus we reject the null hypothesis. 
+As an alternative approach, we observed that the odds of mild cognitive impairment among those in the high school education category was 0.27 (95% confidence interval: 0.2, 0.37) times lower than among thos in the less than high school education category. We also observed that the odds of mild cognitive impairment among those in the greater than high school education category was 0.1 (95% confidence interval: 0.08, 0.14) times lower than among thos in the less than high school education category.
+
+
+
+
