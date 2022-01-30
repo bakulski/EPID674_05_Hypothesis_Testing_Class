@@ -1,12 +1,14 @@
 ---
 title: "EPID674 Epidemiologic Data Analysis using R"
-subtitle: "Hypothesis Testing in R"
 author: "Kelly Bakulski, Lauren Middleton"
 date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
 output:
+  word_document:
+    toc: yes
   html_document:
     toc: yes
     toc_float: yes
+subtitle: Hypothesis Testing in R
 ---
 
 ### Install new packages
@@ -16,6 +18,9 @@ options(repos="https://cran.rstudio.com" )
 install.packages("epiDisplay")
 install.packages("here")
 install.packages("tidyverse")
+install.packages("ggcorrplot")
+install.packages("gtsummary")
+install.packages("sjlabelled")
 
 # To avoid installing every time: in curly brackets set eval=FALSE
 ```
@@ -37,9 +42,9 @@ library(tidyverse)
 # Load data
 ```{r load_data}
 # Check the file path
-here("nhanes_dataset.rda")
+here("nhanes_class_dataset.rda")
 # Load the saved R data
-load(here("nhanes_dataset.rda"))
+load(here("nhanes_class_dataset.rda"), verbose = TRUE)
 ```
 
 
@@ -49,21 +54,23 @@ load(here("nhanes_dataset.rda"))
 ```{r check_distributions}
 
 # Select the continuous variables to check and transform dataset to long form
-longer_data <- nhanes_dataset %>%
-  dplyr::select(RIDAGEYR,
-                INDFMPIR,
-                LBDLYMNO,
-                LBDNENO,
-                LBXRBCSI,
-                LBXWBCSI,
-                nlr,
-                LBXBCD,
-                LBXBPB,
-                LBXCOT,
-                LBXIRN,
-                URXUAS) %>%
+longer_data <- nhanes %>%
+  select(RIDAGEYR,
+         INDFMPIR,
+         LBDLYMNO,
+         LBDNENO,
+         LBXRBCSI,
+         LBXWBCSI,
+         nlr,
+         LBXBCD,
+         LBXBPB,
+         LBXCOT,
+         LBXIRN,
+         URXUAS) %>%
   remove_all_labels() %>%
   pivot_longer(everything(), names_to = "variable", values_to = "value") 
+
+head(longer_data)
 
 # Plot the distributions of the raw values
 longer_data %>%
@@ -90,10 +97,10 @@ longer_data %>%
 ```{r correlation_tests}
 
 # Correlation test between two continuous variables (default method is Pearson, a parametric test)
-cor.test(nhanes_dataset$LBXIRN, nhanes_dataset$LBXRBCSI)
+cor.test(nhanes$LBXIRN, nhanes$LBXRBCSI)
 
 # Can request spearman, a non-parametric test for non-normally distributed variables
-cor.test(nhanes_dataset$RIDAGEYR, nhanes_dataset$INDFMPIR, method = "spearman")
+cor.test(nhanes$RIDAGEYR, nhanes$INDFMPIR, method = "spearman")
 ```
 
 
@@ -102,8 +109,8 @@ cor.test(nhanes_dataset$RIDAGEYR, nhanes_dataset$INDFMPIR, method = "spearman")
 ```{r correlation_matrix}
 
 # Select the columns of interest
-nhanes_chems <- nhanes_dataset %>%
-  dplyr:: select(LBXIRN,
+nhanes_chems <- nhanes %>%
+  select(LBXIRN,
          LBXCOT,
          LBXBCD,
          LBXBPB,
@@ -143,18 +150,18 @@ What is the relationship between urinary arsenic (URXUAS) and neutrophil/lymphoc
 # What do you expect?
 
 # Calculate mean of iron concentration by sex
-nhanes_dataset %>%
+nhanes %>%
   group_by(sex) %>%
   summarise(mean_iron = mean(LBXIRN, na.rm = TRUE)) %>%
   ungroup()
 
 # T-test of iron and sex: Parametric test with normally distributed dependent variable
-t.test(nhanes_dataset$LBXIRN ~ nhanes_dataset$sex) #What do you get? 
+t.test(nhanes$LBXIRN ~ nhanes$sex) #What do you get? 
 # Do they match?
 
 # Calculated within a bivariate table
-nhanes_dataset %>%
-  dplyr::select(sex,
+nhanes %>%
+  select(sex,
          LBXIRN) %>%
   tbl_summary(by = sex, #stratify by sex
               statistic = all_continuous() ~ "{mean} ({sd})",
@@ -172,17 +179,17 @@ nhanes_dataset %>%
 ```{r ttest_wilcoxon} 
 
 # The relationship between sex and blood Pb
-nhanes_dataset %>%
+nhanes %>%
   group_by(sex) %>%
   summarise(mean_lead = mean(LBXBPB, na.rm = TRUE),
             mean_log_lead = mean(log(LBXBPB), na.rm = TRUE)) %>%
   ungroup()
 
 # T-test: Be sure to log transform blood Pb variable before calculating parametric test statistics
-t.test(log(nhanes_dataset$LBXBPB) ~ nhanes_dataset$sex)
+t.test(log(nhanes$LBXBPB) ~ nhanes$sex)
 
 # Wilcoxon test: Non parametric test, no need to transform variables
-wilcox.test(nhanes_dataset$LBXBPB ~ nhanes_dataset$sex)
+wilcox.test(nhanes$LBXBPB ~ nhanes$sex)
 ```
 
 
@@ -190,22 +197,22 @@ wilcox.test(nhanes_dataset$LBXBPB ~ nhanes_dataset$sex)
 
 ```{r anova}
 # The relationship between age and blood Pb:
-nhanes_dataset %>%
+nhanes %>%
   group_by(age_groups) %>%
   summarise(mean_lead = mean(LBXBPB, na.rm = TRUE),
             mean_log_lead = mean(log(LBXBPB), na.rm = TRUE)) %>%
   ungroup()
 
 # ANOVA test
-aov(log(nhanes_dataset$LBXBPB) ~ nhanes_dataset$age_groups)
-anova(aov(log(nhanes_dataset$LBXBPB) ~ nhanes_dataset$age_groups))
+aov(log(nhanes$LBXBPB) ~ nhanes$age_groups)
+anova(aov(log(nhanes$LBXBPB) ~ nhanes$age_groups))
 # How do we interpret the p-value from an ANOVA test?
 
 # Pairwise t-test
-pairwise.t.test(log(nhanes_dataset$LBXBPB), nhanes_dataset$age_groups)
+pairwise.t.test(log(nhanes$LBXBPB), nhanes$age_groups)
 
 # Pairwise t-test with bonferroni adjustment
-pairwise.t.test(log(nhanes_dataset$LBXBPB), nhanes_dataset$age_groups,
+pairwise.t.test(log(nhanes$LBXBPB), nhanes$age_groups,
                 p.adj = "bonferroni")
 ```
 
@@ -216,18 +223,19 @@ pairwise.t.test(log(nhanes_dataset$LBXBPB), nhanes_dataset$age_groups,
 
 ```{r chisq_test}
 # The relationship between sex and education:
-table(nhanes_dataset$sex, nhanes_dataset$education)
+table(nhanes$sex, nhanes$education)
 
 # Chi-square test
-chisq.test(nhanes_dataset$sex, nhanes_dataset$education)
+chisq.test(nhanes$sex, nhanes$education)
 
 # Calculated within a bivariate table
-nhanes_dataset %>%
-  dplyr::select(sex,
+nhanes %>%
+  select(sex,
          education) %>%
   tbl_summary(by = sex, #stratify by sex
               digits = list(all_categorical() ~ c(0, 1)),
-              missing_text = "Missing (n)"
+              missing_text = "Missing (n)",
+              label = education ~ "Educational attainment"
               ) %>%
   add_p() %>%
   modify_header(label ~ "**Variable**") %>%
@@ -241,14 +249,14 @@ nhanes_dataset %>%
 ```{r fisher_test}
 
 # The relationship between sex and iron status:
-table(nhanes_dataset$sex, nhanes_dataset$iron_status)
+table(nhanes$sex, nhanes$iron_status)
 
 # Fisher exact test
-fisher.test(nhanes_dataset$sex, nhanes_dataset$iron_status)
+fisher.test(nhanes$sex, nhanes$iron_status)
 
 # Calculated within a bivariate table
-nhanes_dataset %>%
-  dplyr::select(sex,
+nhanes %>%
+  select(sex,
          iron_status) %>%
   tbl_summary(by = sex, #stratify by sex
               statistic = list(all_categorical() ~ "{n} ({p}%)"), 
@@ -268,18 +276,18 @@ nhanes_dataset %>%
 ```{r odds_ratio}
 
 # Simplify iron into two categories
-nhanes_dataset_iron <- nhanes_dataset %>%
+nhanes_iron <- nhanes %>%
   filter(!iron_status == "Excessive") %>%
   droplevels() 
-table(nhanes_dataset_iron$iron_status)
-levels(nhanes_dataset$iron_status)
-levels(nhanes_dataset_iron$iron_status)
+table(nhanes_iron$iron_status)
+levels(nhanes$iron_status)
+levels(nhanes_iron$iron_status)
     
 # The relationship between iron status (normal and deficient) and sex
 
 # Make 2x2 table
-nhanes_dataset_iron %>%
-  dplyr::select(sex,
+nhanes_iron %>%
+  select(sex,
          iron_status) %>%
   tbl_summary(by = sex,
              digits = all_categorical() ~ c(0,1)
@@ -288,8 +296,8 @@ nhanes_dataset_iron %>%
   bold_labels()
 
 # Calculate odds ratio
-cc(outcome = relevel(nhanes_dataset_iron$iron_status, ref= "Normal"),
-   exposure = nhanes_dataset_iron$sex)
+cc(outcome = relevel(nhanes_iron$iron_status, ref= "Normal"),
+   exposure = nhanes_iron$sex)
 
 ```
 
@@ -318,7 +326,8 @@ ggplot(results,
        aes(x = or,
            y = study,
            xmin = or_lower_lim,
-           xmax = or_upper_lim)) +
+           xmax = or_upper_lim,
+           color = study)) +
   geom_pointrange() +
   labs(x = "Odds Ratio", y = NULL) +
   geom_vline(xintercept = 1,
