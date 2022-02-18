@@ -27,8 +27,8 @@ library(tidyverse)
 # Load data
 ```{r read_data}
 
-# Load the saved R data
-load(here("nhanes_homework.rda"))
+# Load saved NHANES homework dataset from the project files. This is the dataset we built in homework 2
+load(here(("nhanes_homework_dataset.rda")), verbose = TRUE)
 ```
 
 
