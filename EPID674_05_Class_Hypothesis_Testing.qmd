@@ -1,0 +1,369 @@
+---
+title: "EPID674 Epidemiologic Data Analysis using R"
+subtitle: "Hypothesis Testing in R"
+author: "Kelly Bakulski, Lauren Middleton"
+date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
+format: html
+editor: source
+---
+
+
+### Install new packages
+```{r}
+#| label: install_packages
+#| eval: false
+#| include: false 
+
+# Install packages. Do this only once. 
+options(repos="https://cran.rstudio.com" )
+install.packages("epiDisplay")
+install.packages("here")
+install.packages("tidyverse")
+install.packages("ggcorrplot")
+install.packages("gtsummary")
+install.packages("sjlabelled")
+
+# To avoid installing every time: in with the hashpipe operator "#|" set eval=false
+```
+
+### Load packages
+```{r}
+#| label: load_packages
+#| message: false
+
+# Load these packages for the current session
+library(here)
+library(ggcorrplot)
+library(gtsummary)
+library(epiDisplay)
+library(sjlabelled)
+library(tidyverse)
+
+```
+
+
+# Load data
+```{r}
+#| label: load_data
+
+# Check the file path
+here("nhanes_class_dataset.rda")
+# Load the saved R data
+load(here("nhanes_class_dataset.rda"), verbose = TRUE)
+```
+
+
+# Hypothesis testing in R
+
+## Before you begin: Remember to check your distributions/assumptions
+```{r}
+#| label: check_distributions
+
+# Select the continuous variables to check and transform dataset to long form
+longer_data <- nhanes %>%
+  select(RIDAGEYR,
+         INDFMPIR,
+         LBDLYMNO,
+         LBDNENO,
+         LBXRBCSI,
+         LBXWBCSI,
+         nlr,
+         LBXBCD,
+         LBXBPB,
+         LBXCOT,
+         LBXIRN,
+         URXUAS) %>%
+  remove_all_labels() %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "value") 
+
+head(longer_data)
+
+# Plot the distributions of the raw values
+longer_data %>%
+  ggplot(aes(x = value)) +
+    geom_density() +
+    facet_wrap(~ variable, scales = "free")
+# Are any of these distributions normal?
+
+
+# Plot the distributions of the log transformed values
+longer_data %>%
+  ggplot(aes(x = log(value))) +
+    geom_density() +
+    facet_wrap(~ variable, scales = "free")
+# Are any of the log transformed distributions normal?
+
+# Be sure to use your understanding of the distributions when deciding between parametric and non-parametric tests
+
+```
+
+
+## Correlation tests: Comparing two continuous variables
+
+```{r}
+#| label: correlation_tests
+
+# Correlation test between two continuous variables (default method is Pearson, a parametric test)
+cor.test(nhanes$LBXIRN, nhanes$LBXRBCSI)
+
+# Can request spearman, a non-parametric test for non-normally distributed variables
+cor.test(nhanes$RIDAGEYR, nhanes$INDFMPIR, method = "spearman")
+```
+
+
+## Correlation matrix
+
+```{r}
+#| label: correlation_matrix
+
+# Select the columns of interest
+nhanes_chems <- nhanes %>%
+  select(LBXIRN,
+         LBXCOT,
+         LBXBCD,
+         LBXBPB,
+         LBXWBCSI,
+         LBXRBCSI)
+
+
+# Calculate the correlations, use spearman for non-normally distributed variables
+chem_correlations <- cor(nhanes_chems,
+                         use = "pairwise.complete.obs",
+                         method = "spearman")
+
+# View the correlation matrix
+chem_correlations
+
+# Plot the correlations with ggcorrplot
+ggcorrplot(chem_correlations,
+           type = "lower",
+           outline.col = "white",
+           lab = TRUE)
+
+```
+
+## Check your understanding
+What is the relationship between urinary arsenic (URXUAS) and neutrophil/lymphocyte ratio (nlr)? 
+* Make a new code chunk
+* What type of variables are they? What are their distributions?
+* What is the appropriate test to run?
+* Run the test and interpret the output
+* Does this match your expectations?
+
+# Comparing 1 categorical and 1 continuous variable
+
+## T-test: Independent variable dichotomous, dependent variable continuous, parametric test
+
+```{r} 
+#| label: ttest
+#| tbl-cap: "Iron levels by sex"
+
+# The relationship between sex and iron concentration:
+# What do you expect?
+
+# Calculate mean of iron concentration by sex
+nhanes %>%
+  group_by(sex) %>%
+  summarise(mean_iron = mean(LBXIRN, na.rm = TRUE)) %>%
+  ungroup()
+
+# T-test of iron and sex: Parametric test with normally distributed dependent variable
+t.test(nhanes$LBXIRN ~ nhanes$sex) #What do you get? 
+# Do they match?
+
+# Calculated within a bivariate table
+nhanes %>%
+  select(sex,
+         LBXIRN) %>%
+  tbl_summary(by = sex, #stratify by sex
+              statistic = all_continuous() ~ "{mean} ({sd})",
+              missing_text = "Missing (n)"
+              ) %>%
+  add_p(LBXIRN ~ "t.test") %>%
+  modify_header(label ~ "**Variable**") %>%
+  bold_labels()
+```
+
+
+## Working with a non-normally distributed variable
+## T-test and Wilcoxon test: Independent variable dichotomous, dependent variable continuous
+
+```{r} 
+#| label: ttest_wilcoxon
+
+# The relationship between sex and blood Pb
+nhanes %>%
+  group_by(sex) %>%
+  summarise(mean_lead = mean(LBXBPB, na.rm = TRUE),
+            mean_log_lead = mean(log(LBXBPB), na.rm = TRUE)) %>%
+  ungroup()
+
+# T-test: Be sure to log transform blood Pb variable before calculating parametric test statistics
+t.test(log(nhanes$LBXBPB) ~ nhanes$sex)
+
+# Wilcoxon test: Non parametric test, no need to transform variables
+wilcox.test(nhanes$LBXBPB ~ nhanes$sex)
+```
+
+
+## ANOVA: Independent variable 3+ categories, dependent variable continuous, parametric test
+
+```{r}
+#| label: anova
+
+# The relationship between age and blood Pb:
+nhanes %>%
+  group_by(age_groups) %>%
+  summarise(mean_lead = mean(LBXBPB, na.rm = TRUE),
+            mean_log_lead = mean(log(LBXBPB), na.rm = TRUE)) %>%
+  ungroup()
+
+# ANOVA test
+aov(log(nhanes$LBXBPB) ~ nhanes$age_groups)
+anova(aov(log(nhanes$LBXBPB) ~ nhanes$age_groups))
+# How do we interpret the p-value from an ANOVA test?
+
+# Pairwise t-test
+pairwise.t.test(log(nhanes$LBXBPB), nhanes$age_groups)
+
+# Pairwise t-test with bonferroni adjustment
+pairwise.t.test(log(nhanes$LBXBPB), nhanes$age_groups,
+                p.adj = "bonferroni")
+```
+
+
+# Comparing two categorical variables
+
+## Chi-square test: Parametric test
+
+```{r}
+#| label: chisq_test
+#| tbl-cap: "Education by sex"
+
+# The relationship between sex and education:
+table(nhanes$sex, nhanes$education)
+
+# Chi-square test
+chisq.test(nhanes$sex, nhanes$education)
+
+# Calculated within a bivariate table
+nhanes %>%
+  select(sex,
+         education) %>%
+  tbl_summary(by = sex, #stratify by sex
+              digits = list(all_categorical() ~ c(0, 1)),
+              missing_text = "Missing (n)",
+              label = education ~ "Educational attainment"
+              ) %>%
+  add_p() %>%
+  modify_header(label ~ "**Variable**") %>%
+  bold_labels()
+
+```
+
+
+##  Fisher's test: Non-parametric test
+
+```{r}
+#| label: fisher_test
+#| tbl-cap: "Iron status by sex"
+
+# The relationship between sex and iron status:
+table(nhanes$sex, nhanes$iron_status)
+
+# Fisher exact test
+fisher.test(nhanes$sex, nhanes$iron_status)
+
+# Calculated within a bivariate table
+nhanes %>%
+  select(sex,
+         iron_status) %>%
+  tbl_summary(by = sex, #stratify by sex
+              statistic = list(all_categorical() ~ "{n} ({p}%)"), 
+              digits = all_categorical() ~ c(0,1),
+              missing_text = "Missing (n)"
+              ) %>%
+  add_p(iron_status ~ "fisher.test") %>%
+  modify_header(label ~ "**Variable**") %>%
+  bold_labels()
+
+```
+
+## Check your understanding
+What is the relationship between education (education) and poverty income ratio (INDFMPIR)? 
+* Make a new code chunk
+* What type of variables are they? What are their distributions?
+* What is the appropriate test to run?
+* Run the test and interpret the output
+* Does this match your expectations?
+
+# Calculate odds ratios from 2x2 table
+
+```{r}
+#| label: odds_ratio
+#| tbl-cap: "Iron status by sex"
+
+# Simplify iron into two categories
+nhanes_iron <- nhanes %>%
+  filter(!iron_status == "Excessive") %>%
+  droplevels() 
+table(nhanes_iron$iron_status)
+levels(nhanes$iron_status)
+levels(nhanes_iron$iron_status)
+    
+# The relationship between iron status (normal and deficient) and sex
+
+# Make 2x2 table
+nhanes_iron %>%
+  select(sex,
+         iron_status) %>%
+  tbl_summary(by = sex,
+             digits = all_categorical() ~ c(0,1)
+              ) %>%
+  modify_header(label ~ "**Variable**") %>%
+  bold_labels()
+
+# Calculate odds ratio
+cc(outcome = relevel(nhanes_iron$iron_status, ref= "Normal"),
+   exposure = nhanes_iron$sex)
+
+```
+
+
+# Create fake data for graphing odds ratio results
+
+```{r}
+#| label: setup_data_for_forestplot
+
+## Assuming that you obtained ORs and want to compare the results to what was found in other studies.
+## Let's create a data frame for these ORs and 95% CIs.
+
+study <- c("Overall", "Study 1", "Study 2", "Study 3", "Study 4")
+or <- c(1.5, 1.1, 2.0, 1.4, 1.6)
+or_lower_lim <- c(1.2, 0.9, 1.65, 0.95, 1.3)
+or_upper_lim <- c(1.85, 1.35, 2.4, 2.05, 2.0)
+results <- data.frame(study, or, or_lower_lim, or_upper_lim)
+results$study <- factor(results$study,
+                     levels = results$study)
+```
+
+
+# Plot odds ratios with a forest plot
+
+```{r}
+#| label: forest_plot_ggplot2
+
+# Forest plot, ggplot2 package
+ggplot(results,
+       aes(x = or,
+           y = study,
+           xmin = or_lower_lim,
+           xmax = or_upper_lim,
+           color = study)) +
+  geom_pointrange() +
+  labs(x = "Odds Ratio", y = NULL) +
+  geom_vline(xintercept = 1,
+             linetype = 2) +
+  guides(color = guide_legend(reverse = TRUE))
+```
+

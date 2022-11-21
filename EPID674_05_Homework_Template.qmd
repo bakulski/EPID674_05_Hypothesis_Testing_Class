@@ -1,0 +1,97 @@
+---
+title: "EPID 674: Data Management in R"
+subtitle: "Homework 5 Template"
+author: "Kelly Bakulski"
+date: "Last compiled on `r format(Sys.Date(), '%B %d, %Y')`"
+format: html
+editor: visual
+---
+
+
+# Load packages
+
+```{r}
+#| label: load_packages
+#| echo: true
+#| message: false
+#| warning: false
+
+# Load packages for this assignment, do this every time
+library(here)
+library(ggcorrplot)
+library(gtsummary)
+library(epiDisplay)
+library(tidyverse)
+
+```
+
+# Load data
+```{r}
+#| label: read_data
+
+# Load saved NHANES homework dataset from the project files. This is the dataset we built in homework 2
+load(here(("nhanes_homework_dataset.rda")), verbose = TRUE)
+```
+
+
+
+# 1. Test association between age group and cognition score
+
+### Test the association between age group (variable: age_group) and digit symbol substitution test score (variable: CFDDS).
+
+```{r}
+#| label: age_group
+
+# Insert code for question 1 here
+
+```
+
+Interpret the findings: 
+
+
+# 2. Test association between sex and cognition score
+
+### Test the association between sex group (variable: sex) and digit symbol substitution test score (variable: CFDDS).
+
+```{r}
+#| label: sex_group
+
+# Insert code for question 2 here
+
+```
+
+Interpret the findings: 
+
+
+
+# 3. Test association between serum cotinine levels and cognition score
+
+### Test the association between serum cotinine (variable: LBXCOT) and digit symbol substitution test score (variable: CFDDS).
+
+```{r}
+#| label: cotinine
+
+# Insert code for question 3 here
+
+```
+
+Interpret the findings:  
+
+
+
+# 4. Test association between educational attainment and mild cognitive impairment status
+
+### Test the association between educational attainment (variable: education) and mild cognitive impairment status (variable: MCI).
+
+```{r}
+#| label: educational_attainment
+
+# Insert code for question 4 here
+
+```
+
+Interpret the findings: 
+
+
+
+
