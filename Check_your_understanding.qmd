@@ -2,6 +2,8 @@
 title: "Check your understanding"
 format: html
 editor: source
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -25,11 +27,11 @@ nhanes_dataset %>%
   theme(axis.title = element_text(size=20))
 
 
-nhanes_dataset %>%
-  ggplot(aes(x = LBXBPB)) + 
-  geom_histogram() + 
+nhanes %>%
+  ggplot(aes(x = LBXBPB, fill = sex)) + 
+  geom_histogram(position = "identity", alpha = 0.5, binwidth = 0.1) + 
   labs(x="Blood lead levels (ug/dL)") +
-  theme(axis.title = element_text(size=20))
+  theme(axis.title = element_text(size=20)) + xlim (0,10)
 ```
 
 
@@ -37,12 +39,46 @@ nhanes_dataset %>%
 ```{r}
 cor.test(nhanes_dataset$RIDAGEYR, nhanes_dataset$LBXBPB, method = "spearman")
 
+cor.test(nhanes$RIDAGEYR, nhanes$LBXBPB, method = "spearman")
+
 t.test(nhanes_dataset$LBXRBCSI ~ nhanes_dataset$sex)
+```
+```{r}
+# The relationship between sex and iron concentration:
+# What do you expect?
+
+ggplot(nhanes, aes(x = LBXRBCSI,
+                   fill = sex)) +
+  geom_histogram(position = "identity",
+                 alpha = 0.5)
+
+
+# Calculate mean of iron concentration by sex
+nhanes %>%
+  group_by(sex) %>%
+  summarise(mean_iron = mean(LBXRBCSI, na.rm = TRUE)) %>%
+  ungroup()
+
+# T-test of iron and sex: Parametric test with normally distributed dependent variable
+t.test(nhanes$LBXRBCSI ~ nhanes$sex) #What do you get? 
+# Do they match?
+
+# Calculated within a bivariate table
+nhanes %>%
+  select(sex,
+         LBXIRN) %>%
+  tbl_summary(by = sex, #stratify by sex
+              statistic = all_continuous() ~ "{mean} ({sd})",
+              missing_text = "Missing (n)"
+              ) %>%
+  add_p(LBXIRN ~ "t.test") %>%
+  modify_header(label ~ "**Variable**") %>%
+  bold_labels()
 ```
 
 
 ```{r}
-anova(aov(nhanes_dataset$LBXRBCSI ~ nhanes_dataset$age_groups))
+anova(aov(nhanes$LBXRBCSI ~ nhanes$age_groups))
 
 anova(aov(nhanes_dataset$LBXRBCSI ~ nhanes_dataset$education))
 ```

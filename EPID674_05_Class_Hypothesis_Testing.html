@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Kelly Bakulski, Lauren Middleton">
-<meta name="dcterms.date" content="2022-11-21">
+<meta name="dcterms.date" content="2023-02-05">
 
 <title>EPID674 Epidemiologic Data Analysis using R</title>
 <style>
@@ -128,7 +128,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 21, 2022</p>
+      <p class="date">February 5, 2023</p>
     </div>
   </div>
     
@@ -208,7 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_density</span>() <span class="sc">+</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> variable, <span class="at">scales =</span> <span class="st">"free"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 25934 rows containing non-finite values (stat_density).</code></pre>
+<pre><code>Warning: Removed 25934 rows containing non-finite values (`stat_density()`).</code></pre>
 </div>
 <div class="cell-output-display">
 <p><img src="EPID674_05_Class_Hypothesis_Testing_files/figure-html/check_distributions-1.png" class="img-fluid" width="672"></p>
@@ -222,7 +222,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_density</span>() <span class="sc">+</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> variable, <span class="at">scales =</span> <span class="st">"free"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 26382 rows containing non-finite values (stat_density).</code></pre>
+<pre><code>Warning: Removed 26382 rows containing non-finite values (`stat_density()`).</code></pre>
 </div>
 <div class="cell-output-display">
 <p><img src="EPID674_05_Class_Hypothesis_Testing_files/figure-html/check_distributions-2.png" class="img-fluid" width="672"></p>
@@ -235,8 +235,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="correlation-tests-comparing-two-continuous-variables" class="level2">
 <h2 class="anchored" data-anchor-id="correlation-tests-comparing-two-continuous-variables">Correlation tests: Comparing two continuous variables</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlation test between two continuous variables (default method is Pearson, a parametric test)</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(nhanes<span class="sc">$</span>LBXIRN, nhanes<span class="sc">$</span>LBXRBCSI)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># What do you expect?</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> LBXIRN,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> LBXRBCSI)) <span class="sc">+</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Don't know how to automatically pick scale for object of type
+&lt;labelled/integer&gt;. Defaulting to continuous.
+`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3335 rows containing non-finite values (`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3335 rows containing missing values (`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="EPID674_05_Class_Hypothesis_Testing_files/figure-html/correlation_tests-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlation test between two continuous variables (default method is Pearson, a parametric test)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(nhanes<span class="sc">$</span>LBXIRN, nhanes<span class="sc">$</span>LBXRBCSI) <span class="co"># What do you get?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Pearson's product-moment correlation
@@ -250,8 +269,10 @@ sample estimates:
       cor 
 0.1401757 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Can request spearman, a non-parametric test for non-normally distributed variables</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(nhanes<span class="sc">$</span>RIDAGEYR, nhanes<span class="sc">$</span>INDFMPIR, <span class="at">method =</span> <span class="st">"spearman"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do they match?</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Can request spearman, a non-parametric test for non-normally distributed variables</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(nhanes<span class="sc">$</span>RIDAGEYR, nhanes<span class="sc">$</span>INDFMPIR, <span class="at">method =</span> <span class="st">"spearman"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in cor.test.default(nhanes$RIDAGEYR, nhanes$INDFMPIR, method =
 "spearman"): Cannot compute exact p-value with ties</code></pre>
@@ -272,23 +293,23 @@ sample estimates:
 <section id="correlation-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="correlation-matrix">Correlation matrix</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the columns of interest</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>nhanes_chems <span class="ot">&lt;-</span> nhanes <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(LBXIRN,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>         LBXCOT,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>         LBXBCD,</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>         LBXBPB,</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>         LBXWBCSI,</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>         LBXRBCSI)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the correlations, use spearman for non-normally distributed variables</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>chem_correlations <span class="ot">&lt;-</span> <span class="fu">cor</span>(nhanes_chems,</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>,</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">method =</span> <span class="st">"spearman"</span>)</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="co"># View the correlation matrix</span></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>chem_correlations</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the columns of interest</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>nhanes_chems <span class="ot">&lt;-</span> nhanes <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(LBXIRN,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>         LBXCOT,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>         LBXBCD,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>         LBXBPB,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>         LBXWBCSI,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>         LBXRBCSI)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the correlations, use spearman for non-normally distributed variables</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>chem_correlations <span class="ot">&lt;-</span> <span class="fu">cor</span>(nhanes_chems,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">method =</span> <span class="st">"spearman"</span>)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co"># View the correlation matrix</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>chem_correlations</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              LBXIRN      LBXCOT      LBXBCD      LBXBPB    LBXWBCSI
 LBXIRN    1.00000000 -0.01926272 -0.02056100  0.06665300 -0.15056021
@@ -305,11 +326,11 @@ LBXBPB    0.02625293
 LBXWBCSI  0.08120104
 LBXRBCSI  1.00000000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the correlations with ggcorrplot</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(chem_correlations,</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="st">"lower"</span>,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">outline.col =</span> <span class="st">"white"</span>,</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">lab =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the correlations with ggcorrplot</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(chem_correlations,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="st">"lower"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">outline.col =</span> <span class="st">"white"</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">lab =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="EPID674_05_Class_Hypothesis_Testing_files/figure-html/correlation_matrix-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -325,14 +346,14 @@ LBXRBCSI  1.00000000</code></pre>
 <section id="t-test-independent-variable-dichotomous-dependent-variable-continuous-parametric-test" class="level2">
 <h2 class="anchored" data-anchor-id="t-test-independent-variable-dichotomous-dependent-variable-continuous-parametric-test">T-test: Independent variable dichotomous, dependent variable continuous, parametric test</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between sex and iron concentration:</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># What do you expect?</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate mean of iron concentration by sex</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">%&gt;%</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_iron =</span> <span class="fu">mean</span>(LBXIRN, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between sex and iron concentration:</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># What do you expect?</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate mean of iron concentration by sex</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">%&gt;%</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_iron =</span> <span class="fu">mean</span>(LBXIRN, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 2
   sex    mean_iron
@@ -340,8 +361,8 @@ LBXRBCSI  1.00000000</code></pre>
 1 Male        93.8
 2 Female      79.1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># T-test of iron and sex: Parametric test with normally distributed dependent variable</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(nhanes<span class="sc">$</span>LBXIRN <span class="sc">~</span> nhanes<span class="sc">$</span>sex) <span class="co">#What do you get? </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># T-test of iron and sex: Parametric test with normally distributed dependent variable</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(nhanes<span class="sc">$</span>LBXIRN <span class="sc">~</span> nhanes<span class="sc">$</span>sex) <span class="co">#What do you get? </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Welch Two Sample t-test
@@ -355,27 +376,27 @@ sample estimates:
   mean in group Male mean in group Female 
              93.8048              79.1355 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do they match?</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculated within a bivariate table</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex,</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>         LBXIRN) <span class="sc">%&gt;%</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> sex, <span class="co">#stratify by sex</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistic =</span> <span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>,</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">missing_text =</span> <span class="st">"Missing (n)"</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span></span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>(LBXIRN <span class="sc">~</span> <span class="st">"t.test"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_header</span>(label <span class="sc">~</span> <span class="st">"**Variable**"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do they match?</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculated within a bivariate table</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>         LBXIRN) <span class="sc">%&gt;%</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> sex, <span class="co">#stratify by sex</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistic =</span> <span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>,</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">missing_text =</span> <span class="st">"Missing (n)"</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>(LBXIRN <span class="sc">~</span> <span class="st">"t.test"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_header</span>(label <span class="sc">~</span> <span class="st">"**Variable**"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="nwqjelongl" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="vtrplcrwda" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#nwqjelongl) .gt_table {
+:where(#vtrplcrwda) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -400,7 +421,7 @@ sample estimates:
   border-left-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_heading {
+:where(#vtrplcrwda) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -412,7 +433,12 @@ sample estimates:
   border-right-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_title {
+:where(#vtrplcrwda) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#vtrplcrwda) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -424,7 +450,7 @@ sample estimates:
   border-bottom-width: 0;
 }
 
-:where(#nwqjelongl) .gt_subtitle {
+:where(#vtrplcrwda) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -436,13 +462,13 @@ sample estimates:
   border-top-width: 0;
 }
 
-:where(#nwqjelongl) .gt_bottom_border {
+:where(#vtrplcrwda) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_col_headings {
+:where(#vtrplcrwda) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -457,7 +483,7 @@ sample estimates:
   border-right-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_col_heading {
+:where(#vtrplcrwda) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -477,7 +503,7 @@ sample estimates:
   overflow-x: hidden;
 }
 
-:where(#nwqjelongl) .gt_column_spanner_outer {
+:where(#vtrplcrwda) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -489,15 +515,15 @@ sample estimates:
   padding-right: 4px;
 }
 
-:where(#nwqjelongl) .gt_column_spanner_outer:first-child {
+:where(#vtrplcrwda) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#nwqjelongl) .gt_column_spanner_outer:last-child {
+:where(#vtrplcrwda) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#nwqjelongl) .gt_column_spanner {
+:where(#vtrplcrwda) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -509,7 +535,7 @@ sample estimates:
   width: 100%;
 }
 
-:where(#nwqjelongl) .gt_group_heading {
+:where(#vtrplcrwda) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -532,9 +558,10 @@ sample estimates:
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
-:where(#nwqjelongl) .gt_empty_group_heading {
+:where(#vtrplcrwda) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -549,15 +576,15 @@ sample estimates:
   vertical-align: middle;
 }
 
-:where(#nwqjelongl) .gt_from_md > :first-child {
+:where(#vtrplcrwda) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#nwqjelongl) .gt_from_md > :last-child {
+:where(#vtrplcrwda) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#nwqjelongl) .gt_row {
+:where(#vtrplcrwda) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -576,7 +603,7 @@ sample estimates:
   overflow-x: hidden;
 }
 
-:where(#nwqjelongl) .gt_stub {
+:where(#vtrplcrwda) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -589,7 +616,7 @@ sample estimates:
   padding-right: 5px;
 }
 
-:where(#nwqjelongl) .gt_stub_row_group {
+:where(#vtrplcrwda) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -603,11 +630,11 @@ sample estimates:
   vertical-align: top;
 }
 
-:where(#nwqjelongl) .gt_row_group_first td {
+:where(#vtrplcrwda) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#nwqjelongl) .gt_summary_row {
+:where(#vtrplcrwda) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -617,16 +644,16 @@ sample estimates:
   padding-right: 5px;
 }
 
-:where(#nwqjelongl) .gt_first_summary_row {
+:where(#vtrplcrwda) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_first_summary_row.thick {
+:where(#vtrplcrwda) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#nwqjelongl) .gt_last_summary_row {
+:where(#vtrplcrwda) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -636,7 +663,7 @@ sample estimates:
   border-bottom-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_grand_summary_row {
+:where(#vtrplcrwda) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -646,7 +673,7 @@ sample estimates:
   padding-right: 5px;
 }
 
-:where(#nwqjelongl) .gt_first_grand_summary_row {
+:where(#vtrplcrwda) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -656,11 +683,11 @@ sample estimates:
   border-top-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_striped {
+:where(#vtrplcrwda) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#nwqjelongl) .gt_table_body {
+:where(#vtrplcrwda) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -669,7 +696,7 @@ sample estimates:
   border-bottom-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_footnotes {
+:where(#vtrplcrwda) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -683,7 +710,7 @@ sample estimates:
   border-right-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_footnote {
+:where(#vtrplcrwda) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -692,7 +719,7 @@ sample estimates:
   padding-right: 5px;
 }
 
-:where(#nwqjelongl) .gt_sourcenotes {
+:where(#vtrplcrwda) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -706,7 +733,7 @@ sample estimates:
   border-right-color: #D3D3D3;
 }
 
-:where(#nwqjelongl) .gt_sourcenote {
+:where(#vtrplcrwda) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -714,64 +741,64 @@ sample estimates:
   padding-right: 5px;
 }
 
-:where(#nwqjelongl) .gt_left {
+:where(#vtrplcrwda) .gt_left {
   text-align: left;
 }
 
-:where(#nwqjelongl) .gt_center {
+:where(#vtrplcrwda) .gt_center {
   text-align: center;
 }
 
-:where(#nwqjelongl) .gt_right {
+:where(#vtrplcrwda) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#nwqjelongl) .gt_font_normal {
+:where(#vtrplcrwda) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#nwqjelongl) .gt_font_bold {
+:where(#vtrplcrwda) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#nwqjelongl) .gt_font_italic {
+:where(#vtrplcrwda) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#nwqjelongl) .gt_super {
+:where(#vtrplcrwda) .gt_super {
   font-size: 65%;
 }
 
-:where(#nwqjelongl) .gt_footnote_marks {
+:where(#vtrplcrwda) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#nwqjelongl) .gt_asterisk {
+:where(#vtrplcrwda) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#nwqjelongl) .gt_indent_1 {
+:where(#vtrplcrwda) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#nwqjelongl) .gt_indent_2 {
+:where(#vtrplcrwda) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#nwqjelongl) .gt_indent_3 {
+:where(#vtrplcrwda) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#nwqjelongl) .gt_indent_4 {
+:where(#vtrplcrwda) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#nwqjelongl) .gt_indent_5 {
+:where(#vtrplcrwda) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -779,21 +806,21 @@ sample estimates:
   
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col"><strong>Variable</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>Male</strong>, N = 4,557<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>Female</strong>, N = 4,697<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>p-value</strong><sup class="gt_footnote_marks">2</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Variable</strong>"><strong>Variable</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>Male</strong>, N = 4,557<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>Male</strong>, N = 4,557<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>Female</strong>, N = 4,697<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>Female</strong>, N = 4,697<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>p-value</strong><sup class=&quot;gt_footnote_marks&quot;>2</sup>"><strong>p-value</strong><sup class="gt_footnote_marks">2</sup></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left" style="font-weight: bold;">Iron frozen, Serum (ug/dL)</td>
-<td class="gt_row gt_center">94 (36)</td>
-<td class="gt_row gt_center">79 (36)</td>
-<td class="gt_row gt_center">&lt;0.001</td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Missing (n)</td>
-<td class="gt_row gt_center">1,683</td>
-<td class="gt_row gt_center">1,649</td>
-<td class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Iron frozen, Serum (ug/dL)</td>
+<td headers="stat_1" class="gt_row gt_center">94 (36)</td>
+<td headers="stat_2" class="gt_row gt_center">79 (36)</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Missing (n)</td>
+<td headers="stat_1" class="gt_row gt_center">1,683</td>
+<td headers="stat_2" class="gt_row gt_center">1,649</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
   </tbody>
   
   <tfoot class="gt_footnotes">
@@ -815,12 +842,12 @@ sample estimates:
 <section id="t-test-and-wilcoxon-test-independent-variable-dichotomous-dependent-variable-continuous" class="level2">
 <h2 class="anchored" data-anchor-id="t-test-and-wilcoxon-test-independent-variable-dichotomous-dependent-variable-continuous">T-test and Wilcoxon test: Independent variable dichotomous, dependent variable continuous</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between sex and blood Pb</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_lead =</span> <span class="fu">mean</span>(LBXBPB, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean_log_lead =</span> <span class="fu">mean</span>(<span class="fu">log</span>(LBXBPB), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between sex and blood Pb</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_lead =</span> <span class="fu">mean</span>(LBXBPB, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean_log_lead =</span> <span class="fu">mean</span>(<span class="fu">log</span>(LBXBPB), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 3
   sex    mean_lead mean_log_lead
@@ -828,8 +855,8 @@ sample estimates:
 1 Male       1.25         -0.100
 2 Female     0.924        -0.374</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># T-test: Be sure to log transform blood Pb variable before calculating parametric test statistics</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB) <span class="sc">~</span> nhanes<span class="sc">$</span>sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># T-test: Be sure to log transform blood Pb variable before calculating parametric test statistics</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB) <span class="sc">~</span> nhanes<span class="sc">$</span>sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Welch Two Sample t-test
@@ -843,8 +870,8 @@ sample estimates:
   mean in group Male mean in group Female 
           -0.1004491           -0.3741614 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wilcoxon test: Non parametric test, no need to transform variables</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(nhanes<span class="sc">$</span>LBXBPB <span class="sc">~</span> nhanes<span class="sc">$</span>sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wilcoxon test: Non parametric test, no need to transform variables</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(nhanes<span class="sc">$</span>LBXBPB <span class="sc">~</span> nhanes<span class="sc">$</span>sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Wilcoxon rank sum test with continuity correction
@@ -858,12 +885,12 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 <section id="anova-independent-variable-3-categories-dependent-variable-continuous-parametric-test" class="level2">
 <h2 class="anchored" data-anchor-id="anova-independent-variable-3-categories-dependent-variable-continuous-parametric-test">ANOVA: Independent variable 3+ categories, dependent variable continuous, parametric test</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between age and blood Pb:</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age_groups) <span class="sc">%&gt;%</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_lead =</span> <span class="fu">mean</span>(LBXBPB, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean_log_lead =</span> <span class="fu">mean</span>(<span class="fu">log</span>(LBXBPB), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between age and blood Pb:</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age_groups) <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_lead =</span> <span class="fu">mean</span>(LBXBPB, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean_log_lead =</span> <span class="fu">mean</span>(<span class="fu">log</span>(LBXBPB), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
   age_groups mean_lead mean_log_lead
@@ -874,8 +901,8 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 4 (48,64]        1.45          0.143
 5 (64,80]        1.64          0.292</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ANOVA test</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">aov</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB) <span class="sc">~</span> nhanes<span class="sc">$</span>age_groups)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ANOVA test</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">aov</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB) <span class="sc">~</span> nhanes<span class="sc">$</span>age_groups)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
    aov(formula = log(nhanes$LBXBPB) ~ nhanes$age_groups)
@@ -889,7 +916,7 @@ Residual standard error: 0.6378089
 Estimated effects may be unbalanced
 2370 observations deleted due to missingness</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">aov</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB) <span class="sc">~</span> nhanes<span class="sc">$</span>age_groups))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">aov</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB) <span class="sc">~</span> nhanes<span class="sc">$</span>age_groups))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -900,10 +927,10 @@ Residuals         6879 2798.4   0.407
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How do we interpret the p-value from an ANOVA test?</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pairwise t-test</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pairwise.t.test</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB), nhanes<span class="sc">$</span>age_groups)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How do we interpret the p-value from an ANOVA test?</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pairwise t-test</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pairwise.t.test</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB), nhanes<span class="sc">$</span>age_groups)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Pairwise comparisons using t tests with pooled SD 
@@ -918,9 +945,9 @@ data:  log(nhanes$LBXBPB) and nhanes$age_groups
 
 P value adjustment method: holm </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pairwise t-test with bonferroni adjustment</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pairwise.t.test</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB), nhanes<span class="sc">$</span>age_groups,</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">p.adj =</span> <span class="st">"bonferroni"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pairwise t-test with bonferroni adjustment</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pairwise.t.test</span>(<span class="fu">log</span>(nhanes<span class="sc">$</span>LBXBPB), nhanes<span class="sc">$</span>age_groups,</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">p.adj =</span> <span class="st">"bonferroni"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Pairwise comparisons using t tests with pooled SD 
@@ -943,8 +970,8 @@ P value adjustment method: bonferroni </code></pre>
 <section id="chi-square-test-parametric-test" class="level2">
 <h2 class="anchored" data-anchor-id="chi-square-test-parametric-test">Chi-square test: Parametric test</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between sex and education:</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(nhanes<span class="sc">$</span>sex, nhanes<span class="sc">$</span>education)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between sex and education:</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(nhanes<span class="sc">$</span>sex, nhanes<span class="sc">$</span>education)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        
          Less than high school Less than 5th grade High school or GED
@@ -955,8 +982,8 @@ P value adjustment method: bonferroni </code></pre>
   Male                    1480
   Female                  1705</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Chi-square test</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(nhanes<span class="sc">$</span>sex, nhanes<span class="sc">$</span>education)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Chi-square test</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(nhanes<span class="sc">$</span>sex, nhanes<span class="sc">$</span>education)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Pearson's Chi-squared test
@@ -964,26 +991,26 @@ P value adjustment method: bonferroni </code></pre>
 data:  nhanes$sex and nhanes$education
 X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculated within a bivariate table</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex,</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>         education) <span class="sc">%&gt;%</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> sex, <span class="co">#stratify by sex</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">digits =</span> <span class="fu">list</span>(<span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)),</span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">missing_text =</span> <span class="st">"Missing (n)"</span>,</span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">label =</span> education <span class="sc">~</span> <span class="st">"Educational attainment"</span></span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span></span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_header</span>(label <span class="sc">~</span> <span class="st">"**Variable**"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculated within a bivariate table</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex,</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>         education) <span class="sc">%&gt;%</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> sex, <span class="co">#stratify by sex</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">digits =</span> <span class="fu">list</span>(<span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)),</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">missing_text =</span> <span class="st">"Missing (n)"</span>,</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">label =</span> education <span class="sc">~</span> <span class="st">"Educational attainment"</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_header</span>(label <span class="sc">~</span> <span class="st">"**Variable**"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="nazobvfnxp" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="ppluijskkz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#nazobvfnxp) .gt_table {
+:where(#ppluijskkz) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1008,7 +1035,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-left-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_heading {
+:where(#ppluijskkz) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1020,7 +1047,12 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-right-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_title {
+:where(#ppluijskkz) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#ppluijskkz) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1032,7 +1064,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-bottom-width: 0;
 }
 
-:where(#nazobvfnxp) .gt_subtitle {
+:where(#ppluijskkz) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1044,13 +1076,13 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-top-width: 0;
 }
 
-:where(#nazobvfnxp) .gt_bottom_border {
+:where(#ppluijskkz) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_col_headings {
+:where(#ppluijskkz) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1065,7 +1097,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-right-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_col_heading {
+:where(#ppluijskkz) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1085,7 +1117,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   overflow-x: hidden;
 }
 
-:where(#nazobvfnxp) .gt_column_spanner_outer {
+:where(#ppluijskkz) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1097,15 +1129,15 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   padding-right: 4px;
 }
 
-:where(#nazobvfnxp) .gt_column_spanner_outer:first-child {
+:where(#ppluijskkz) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#nazobvfnxp) .gt_column_spanner_outer:last-child {
+:where(#ppluijskkz) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#nazobvfnxp) .gt_column_spanner {
+:where(#ppluijskkz) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1117,7 +1149,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   width: 100%;
 }
 
-:where(#nazobvfnxp) .gt_group_heading {
+:where(#ppluijskkz) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1140,9 +1172,10 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
-:where(#nazobvfnxp) .gt_empty_group_heading {
+:where(#ppluijskkz) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1157,15 +1190,15 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   vertical-align: middle;
 }
 
-:where(#nazobvfnxp) .gt_from_md > :first-child {
+:where(#ppluijskkz) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#nazobvfnxp) .gt_from_md > :last-child {
+:where(#ppluijskkz) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#nazobvfnxp) .gt_row {
+:where(#ppluijskkz) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1184,7 +1217,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   overflow-x: hidden;
 }
 
-:where(#nazobvfnxp) .gt_stub {
+:where(#ppluijskkz) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1197,7 +1230,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   padding-right: 5px;
 }
 
-:where(#nazobvfnxp) .gt_stub_row_group {
+:where(#ppluijskkz) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1211,11 +1244,11 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   vertical-align: top;
 }
 
-:where(#nazobvfnxp) .gt_row_group_first td {
+:where(#ppluijskkz) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#nazobvfnxp) .gt_summary_row {
+:where(#ppluijskkz) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1225,16 +1258,16 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   padding-right: 5px;
 }
 
-:where(#nazobvfnxp) .gt_first_summary_row {
+:where(#ppluijskkz) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_first_summary_row.thick {
+:where(#ppluijskkz) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#nazobvfnxp) .gt_last_summary_row {
+:where(#ppluijskkz) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1244,7 +1277,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_grand_summary_row {
+:where(#ppluijskkz) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1254,7 +1287,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   padding-right: 5px;
 }
 
-:where(#nazobvfnxp) .gt_first_grand_summary_row {
+:where(#ppluijskkz) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1264,11 +1297,11 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-top-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_striped {
+:where(#ppluijskkz) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#nazobvfnxp) .gt_table_body {
+:where(#ppluijskkz) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1277,7 +1310,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_footnotes {
+:where(#ppluijskkz) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1291,7 +1324,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-right-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_footnote {
+:where(#ppluijskkz) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1300,7 +1333,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   padding-right: 5px;
 }
 
-:where(#nazobvfnxp) .gt_sourcenotes {
+:where(#ppluijskkz) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1314,7 +1347,7 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   border-right-color: #D3D3D3;
 }
 
-:where(#nazobvfnxp) .gt_sourcenote {
+:where(#ppluijskkz) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1322,64 +1355,64 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   padding-right: 5px;
 }
 
-:where(#nazobvfnxp) .gt_left {
+:where(#ppluijskkz) .gt_left {
   text-align: left;
 }
 
-:where(#nazobvfnxp) .gt_center {
+:where(#ppluijskkz) .gt_center {
   text-align: center;
 }
 
-:where(#nazobvfnxp) .gt_right {
+:where(#ppluijskkz) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#nazobvfnxp) .gt_font_normal {
+:where(#ppluijskkz) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#nazobvfnxp) .gt_font_bold {
+:where(#ppluijskkz) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#nazobvfnxp) .gt_font_italic {
+:where(#ppluijskkz) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#nazobvfnxp) .gt_super {
+:where(#ppluijskkz) .gt_super {
   font-size: 65%;
 }
 
-:where(#nazobvfnxp) .gt_footnote_marks {
+:where(#ppluijskkz) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#nazobvfnxp) .gt_asterisk {
+:where(#ppluijskkz) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#nazobvfnxp) .gt_indent_1 {
+:where(#ppluijskkz) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#nazobvfnxp) .gt_indent_2 {
+:where(#ppluijskkz) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#nazobvfnxp) .gt_indent_3 {
+:where(#ppluijskkz) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#nazobvfnxp) .gt_indent_4 {
+:where(#ppluijskkz) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#nazobvfnxp) .gt_indent_5 {
+:where(#ppluijskkz) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1387,37 +1420,37 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
   
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col"><strong>Variable</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>Male</strong>, N = 4,557<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>Female</strong>, N = 4,697<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>p-value</strong><sup class="gt_footnote_marks">2</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Variable</strong>"><strong>Variable</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>Male</strong>, N = 4,557<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>Male</strong>, N = 4,557<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>Female</strong>, N = 4,697<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>Female</strong>, N = 4,697<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>p-value</strong><sup class=&quot;gt_footnote_marks&quot;>2</sup>"><strong>p-value</strong><sup class="gt_footnote_marks">2</sup></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left" style="font-weight: bold;">Educational attainment</td>
-<td class="gt_row gt_center"></td>
-<td class="gt_row gt_center"></td>
-<td class="gt_row gt_center">0.004</td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Less than high school</td>
-<td class="gt_row gt_center">1,050 (27.3%)</td>
-<td class="gt_row gt_center">1,005 (25.0%)</td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Less than 5th grade</td>
-<td class="gt_row gt_center">570 (14.8%)</td>
-<td class="gt_row gt_center">572 (14.2%)</td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;High school or GED</td>
-<td class="gt_row gt_center">745 (19.4%)</td>
-<td class="gt_row gt_center">735 (18.3%)</td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;More than high school</td>
-<td class="gt_row gt_center">1,480 (38.5%)</td>
-<td class="gt_row gt_center">1,705 (42.4%)</td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Missing (n)</td>
-<td class="gt_row gt_center">712</td>
-<td class="gt_row gt_center">680</td>
-<td class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Educational attainment</td>
+<td headers="stat_1" class="gt_row gt_center"></td>
+<td headers="stat_2" class="gt_row gt_center"></td>
+<td headers="p.value" class="gt_row gt_center">0.004</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Less than high school</td>
+<td headers="stat_1" class="gt_row gt_center">1,050 (27.3%)</td>
+<td headers="stat_2" class="gt_row gt_center">1,005 (25.0%)</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Less than 5th grade</td>
+<td headers="stat_1" class="gt_row gt_center">570 (14.8%)</td>
+<td headers="stat_2" class="gt_row gt_center">572 (14.2%)</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;High school or GED</td>
+<td headers="stat_1" class="gt_row gt_center">745 (19.4%)</td>
+<td headers="stat_2" class="gt_row gt_center">735 (18.3%)</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;More than high school</td>
+<td headers="stat_1" class="gt_row gt_center">1,480 (38.5%)</td>
+<td headers="stat_2" class="gt_row gt_center">1,705 (42.4%)</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Missing (n)</td>
+<td headers="stat_1" class="gt_row gt_center">712</td>
+<td headers="stat_2" class="gt_row gt_center">680</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
   </tbody>
   
   <tfoot class="gt_footnotes">
@@ -1436,16 +1469,16 @@ X-squared = 13.195, df = 3, p-value = 0.004234</code></pre>
 <section id="fishers-test-non-parametric-test" class="level2">
 <h2 class="anchored" data-anchor-id="fishers-test-non-parametric-test">Fisher’s test: Non-parametric test</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between sex and iron status:</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(nhanes<span class="sc">$</span>sex, nhanes<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between sex and iron status:</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(nhanes<span class="sc">$</span>sex, nhanes<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        
          Deficient Excessive Normal
   Male         427        91   2356
   Female       949        51   2048</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fisher exact test</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher.test</span>(nhanes<span class="sc">$</span>sex, nhanes<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fisher exact test</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher.test</span>(nhanes<span class="sc">$</span>sex, nhanes<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Fisher's Exact Test for Count Data
@@ -1454,26 +1487,26 @@ data:  nhanes$sex and nhanes$iron_status
 p-value &lt; 2.2e-16
 alternative hypothesis: two.sided</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculated within a bivariate table</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex,</span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>         iron_status) <span class="sc">%&gt;%</span></span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> sex, <span class="co">#stratify by sex</span></span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{n} ({p}%)"</span>), </span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">digits =</span> <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">missing_text =</span> <span class="st">"Missing (n)"</span></span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span></span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>(iron_status <span class="sc">~</span> <span class="st">"fisher.test"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_header</span>(label <span class="sc">~</span> <span class="st">"**Variable**"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculated within a bivariate table</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">%&gt;%</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex,</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>         iron_status) <span class="sc">%&gt;%</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> sex, <span class="co">#stratify by sex</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{n} ({p}%)"</span>), </span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">digits =</span> <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">missing_text =</span> <span class="st">"Missing (n)"</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>(iron_status <span class="sc">~</span> <span class="st">"fisher.test"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_header</span>(label <span class="sc">~</span> <span class="st">"**Variable**"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="ysixeoksfo" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="adrxntjrga" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#ysixeoksfo) .gt_table {
+:where(#adrxntjrga) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1498,7 +1531,7 @@ alternative hypothesis: two.sided</code></pre>
   border-left-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_heading {
+:where(#adrxntjrga) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1510,7 +1543,12 @@ alternative hypothesis: two.sided</code></pre>
   border-right-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_title {
+:where(#adrxntjrga) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#adrxntjrga) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1522,7 +1560,7 @@ alternative hypothesis: two.sided</code></pre>
   border-bottom-width: 0;
 }
 
-:where(#ysixeoksfo) .gt_subtitle {
+:where(#adrxntjrga) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1534,13 +1572,13 @@ alternative hypothesis: two.sided</code></pre>
   border-top-width: 0;
 }
 
-:where(#ysixeoksfo) .gt_bottom_border {
+:where(#adrxntjrga) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_col_headings {
+:where(#adrxntjrga) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1555,7 +1593,7 @@ alternative hypothesis: two.sided</code></pre>
   border-right-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_col_heading {
+:where(#adrxntjrga) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1575,7 +1613,7 @@ alternative hypothesis: two.sided</code></pre>
   overflow-x: hidden;
 }
 
-:where(#ysixeoksfo) .gt_column_spanner_outer {
+:where(#adrxntjrga) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1587,15 +1625,15 @@ alternative hypothesis: two.sided</code></pre>
   padding-right: 4px;
 }
 
-:where(#ysixeoksfo) .gt_column_spanner_outer:first-child {
+:where(#adrxntjrga) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#ysixeoksfo) .gt_column_spanner_outer:last-child {
+:where(#adrxntjrga) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#ysixeoksfo) .gt_column_spanner {
+:where(#adrxntjrga) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1607,7 +1645,7 @@ alternative hypothesis: two.sided</code></pre>
   width: 100%;
 }
 
-:where(#ysixeoksfo) .gt_group_heading {
+:where(#adrxntjrga) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1630,9 +1668,10 @@ alternative hypothesis: two.sided</code></pre>
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
-:where(#ysixeoksfo) .gt_empty_group_heading {
+:where(#adrxntjrga) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1647,15 +1686,15 @@ alternative hypothesis: two.sided</code></pre>
   vertical-align: middle;
 }
 
-:where(#ysixeoksfo) .gt_from_md > :first-child {
+:where(#adrxntjrga) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#ysixeoksfo) .gt_from_md > :last-child {
+:where(#adrxntjrga) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#ysixeoksfo) .gt_row {
+:where(#adrxntjrga) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1674,7 +1713,7 @@ alternative hypothesis: two.sided</code></pre>
   overflow-x: hidden;
 }
 
-:where(#ysixeoksfo) .gt_stub {
+:where(#adrxntjrga) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1687,7 +1726,7 @@ alternative hypothesis: two.sided</code></pre>
   padding-right: 5px;
 }
 
-:where(#ysixeoksfo) .gt_stub_row_group {
+:where(#adrxntjrga) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1701,11 +1740,11 @@ alternative hypothesis: two.sided</code></pre>
   vertical-align: top;
 }
 
-:where(#ysixeoksfo) .gt_row_group_first td {
+:where(#adrxntjrga) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#ysixeoksfo) .gt_summary_row {
+:where(#adrxntjrga) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1715,16 +1754,16 @@ alternative hypothesis: two.sided</code></pre>
   padding-right: 5px;
 }
 
-:where(#ysixeoksfo) .gt_first_summary_row {
+:where(#adrxntjrga) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_first_summary_row.thick {
+:where(#adrxntjrga) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#ysixeoksfo) .gt_last_summary_row {
+:where(#adrxntjrga) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1734,7 +1773,7 @@ alternative hypothesis: two.sided</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_grand_summary_row {
+:where(#adrxntjrga) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1744,7 +1783,7 @@ alternative hypothesis: two.sided</code></pre>
   padding-right: 5px;
 }
 
-:where(#ysixeoksfo) .gt_first_grand_summary_row {
+:where(#adrxntjrga) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1754,11 +1793,11 @@ alternative hypothesis: two.sided</code></pre>
   border-top-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_striped {
+:where(#adrxntjrga) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#ysixeoksfo) .gt_table_body {
+:where(#adrxntjrga) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1767,7 +1806,7 @@ alternative hypothesis: two.sided</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_footnotes {
+:where(#adrxntjrga) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1781,7 +1820,7 @@ alternative hypothesis: two.sided</code></pre>
   border-right-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_footnote {
+:where(#adrxntjrga) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1790,7 +1829,7 @@ alternative hypothesis: two.sided</code></pre>
   padding-right: 5px;
 }
 
-:where(#ysixeoksfo) .gt_sourcenotes {
+:where(#adrxntjrga) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1804,7 +1843,7 @@ alternative hypothesis: two.sided</code></pre>
   border-right-color: #D3D3D3;
 }
 
-:where(#ysixeoksfo) .gt_sourcenote {
+:where(#adrxntjrga) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1812,64 +1851,64 @@ alternative hypothesis: two.sided</code></pre>
   padding-right: 5px;
 }
 
-:where(#ysixeoksfo) .gt_left {
+:where(#adrxntjrga) .gt_left {
   text-align: left;
 }
 
-:where(#ysixeoksfo) .gt_center {
+:where(#adrxntjrga) .gt_center {
   text-align: center;
 }
 
-:where(#ysixeoksfo) .gt_right {
+:where(#adrxntjrga) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#ysixeoksfo) .gt_font_normal {
+:where(#adrxntjrga) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#ysixeoksfo) .gt_font_bold {
+:where(#adrxntjrga) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#ysixeoksfo) .gt_font_italic {
+:where(#adrxntjrga) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#ysixeoksfo) .gt_super {
+:where(#adrxntjrga) .gt_super {
   font-size: 65%;
 }
 
-:where(#ysixeoksfo) .gt_footnote_marks {
+:where(#adrxntjrga) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#ysixeoksfo) .gt_asterisk {
+:where(#adrxntjrga) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#ysixeoksfo) .gt_indent_1 {
+:where(#adrxntjrga) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#ysixeoksfo) .gt_indent_2 {
+:where(#adrxntjrga) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#ysixeoksfo) .gt_indent_3 {
+:where(#adrxntjrga) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#ysixeoksfo) .gt_indent_4 {
+:where(#adrxntjrga) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#ysixeoksfo) .gt_indent_5 {
+:where(#adrxntjrga) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1877,33 +1916,33 @@ alternative hypothesis: two.sided</code></pre>
   
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col"><strong>Variable</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>Male</strong>, N = 4,557<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>Female</strong>, N = 4,697<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>p-value</strong><sup class="gt_footnote_marks">2</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Variable</strong>"><strong>Variable</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>Male</strong>, N = 4,557<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>Male</strong>, N = 4,557<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>Female</strong>, N = 4,697<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>Female</strong>, N = 4,697<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>p-value</strong><sup class=&quot;gt_footnote_marks&quot;>2</sup>"><strong>p-value</strong><sup class="gt_footnote_marks">2</sup></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left" style="font-weight: bold;">iron_status</td>
-<td class="gt_row gt_center"></td>
-<td class="gt_row gt_center"></td>
-<td class="gt_row gt_center">&lt;0.001</td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Deficient</td>
-<td class="gt_row gt_center">427 (14.9%)</td>
-<td class="gt_row gt_center">949 (31.1%)</td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Excessive</td>
-<td class="gt_row gt_center">91 (3.2%)</td>
-<td class="gt_row gt_center">51 (1.7%)</td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Normal</td>
-<td class="gt_row gt_center">2,356 (82.0%)</td>
-<td class="gt_row gt_center">2,048 (67.2%)</td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Missing (n)</td>
-<td class="gt_row gt_center">1,683</td>
-<td class="gt_row gt_center">1,649</td>
-<td class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">iron_status</td>
+<td headers="stat_1" class="gt_row gt_center"></td>
+<td headers="stat_2" class="gt_row gt_center"></td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Deficient</td>
+<td headers="stat_1" class="gt_row gt_center">427 (14.9%)</td>
+<td headers="stat_2" class="gt_row gt_center">949 (31.1%)</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Excessive</td>
+<td headers="stat_1" class="gt_row gt_center">91 (3.2%)</td>
+<td headers="stat_2" class="gt_row gt_center">51 (1.7%)</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Normal</td>
+<td headers="stat_1" class="gt_row gt_center">2,356 (82.0%)</td>
+<td headers="stat_2" class="gt_row gt_center">2,048 (67.2%)</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Missing (n)</td>
+<td headers="stat_1" class="gt_row gt_center">1,683</td>
+<td headers="stat_2" class="gt_row gt_center">1,649</td>
+<td headers="p.value" class="gt_row gt_center"></td></tr>
   </tbody>
   
   <tfoot class="gt_footnotes">
@@ -1927,43 +1966,43 @@ alternative hypothesis: two.sided</code></pre>
 <section id="calculate-odds-ratios-from-2x2-table" class="level1">
 <h1>Calculate odds ratios from 2x2 table</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simplify iron into two categories</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>nhanes_iron <span class="ot">&lt;-</span> nhanes <span class="sc">%&gt;%</span></span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>iron_status <span class="sc">==</span> <span class="st">"Excessive"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">droplevels</span>() </span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(nhanes_iron<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simplify iron into two categories</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>nhanes_iron <span class="ot">&lt;-</span> nhanes <span class="sc">%&gt;%</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>iron_status <span class="sc">==</span> <span class="st">"Excessive"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">droplevels</span>() </span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(nhanes_iron<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Deficient    Normal 
      1376      4404 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(nhanes<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(nhanes<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Deficient" "Excessive" "Normal"   </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(nhanes_iron<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(nhanes_iron<span class="sc">$</span>iron_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Deficient" "Normal"   </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between iron status (normal and deficient) and sex</span></span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Make 2x2 table</span></span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>nhanes_iron <span class="sc">%&gt;%</span></span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex,</span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>         iron_status) <span class="sc">%&gt;%</span></span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> sex,</span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span>
-<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span></span>
-<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_header</span>(label <span class="sc">~</span> <span class="st">"**Variable**"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The relationship between iron status (normal and deficient) and sex</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Make 2x2 table</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>nhanes_iron <span class="sc">%&gt;%</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex,</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>         iron_status) <span class="sc">%&gt;%</span></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> sex,</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">digits =</span> <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modify_header</span>(label <span class="sc">~</span> <span class="st">"**Variable**"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="zepvcbvjmy" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="cqrtwuonch" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#zepvcbvjmy) .gt_table {
+:where(#cqrtwuonch) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1988,7 +2027,7 @@ Deficient    Normal
   border-left-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_heading {
+:where(#cqrtwuonch) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2000,7 +2039,12 @@ Deficient    Normal
   border-right-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_title {
+:where(#cqrtwuonch) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#cqrtwuonch) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2012,7 +2056,7 @@ Deficient    Normal
   border-bottom-width: 0;
 }
 
-:where(#zepvcbvjmy) .gt_subtitle {
+:where(#cqrtwuonch) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2024,13 +2068,13 @@ Deficient    Normal
   border-top-width: 0;
 }
 
-:where(#zepvcbvjmy) .gt_bottom_border {
+:where(#cqrtwuonch) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_col_headings {
+:where(#cqrtwuonch) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2045,7 +2089,7 @@ Deficient    Normal
   border-right-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_col_heading {
+:where(#cqrtwuonch) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2065,7 +2109,7 @@ Deficient    Normal
   overflow-x: hidden;
 }
 
-:where(#zepvcbvjmy) .gt_column_spanner_outer {
+:where(#cqrtwuonch) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2077,15 +2121,15 @@ Deficient    Normal
   padding-right: 4px;
 }
 
-:where(#zepvcbvjmy) .gt_column_spanner_outer:first-child {
+:where(#cqrtwuonch) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#zepvcbvjmy) .gt_column_spanner_outer:last-child {
+:where(#cqrtwuonch) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#zepvcbvjmy) .gt_column_spanner {
+:where(#cqrtwuonch) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2097,7 +2141,7 @@ Deficient    Normal
   width: 100%;
 }
 
-:where(#zepvcbvjmy) .gt_group_heading {
+:where(#cqrtwuonch) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2120,9 +2164,10 @@ Deficient    Normal
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
-:where(#zepvcbvjmy) .gt_empty_group_heading {
+:where(#cqrtwuonch) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2137,15 +2182,15 @@ Deficient    Normal
   vertical-align: middle;
 }
 
-:where(#zepvcbvjmy) .gt_from_md > :first-child {
+:where(#cqrtwuonch) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#zepvcbvjmy) .gt_from_md > :last-child {
+:where(#cqrtwuonch) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#zepvcbvjmy) .gt_row {
+:where(#cqrtwuonch) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2164,7 +2209,7 @@ Deficient    Normal
   overflow-x: hidden;
 }
 
-:where(#zepvcbvjmy) .gt_stub {
+:where(#cqrtwuonch) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2177,7 +2222,7 @@ Deficient    Normal
   padding-right: 5px;
 }
 
-:where(#zepvcbvjmy) .gt_stub_row_group {
+:where(#cqrtwuonch) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2191,11 +2236,11 @@ Deficient    Normal
   vertical-align: top;
 }
 
-:where(#zepvcbvjmy) .gt_row_group_first td {
+:where(#cqrtwuonch) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#zepvcbvjmy) .gt_summary_row {
+:where(#cqrtwuonch) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2205,16 +2250,16 @@ Deficient    Normal
   padding-right: 5px;
 }
 
-:where(#zepvcbvjmy) .gt_first_summary_row {
+:where(#cqrtwuonch) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_first_summary_row.thick {
+:where(#cqrtwuonch) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#zepvcbvjmy) .gt_last_summary_row {
+:where(#cqrtwuonch) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2224,7 +2269,7 @@ Deficient    Normal
   border-bottom-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_grand_summary_row {
+:where(#cqrtwuonch) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2234,7 +2279,7 @@ Deficient    Normal
   padding-right: 5px;
 }
 
-:where(#zepvcbvjmy) .gt_first_grand_summary_row {
+:where(#cqrtwuonch) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2244,11 +2289,11 @@ Deficient    Normal
   border-top-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_striped {
+:where(#cqrtwuonch) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#zepvcbvjmy) .gt_table_body {
+:where(#cqrtwuonch) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2257,7 +2302,7 @@ Deficient    Normal
   border-bottom-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_footnotes {
+:where(#cqrtwuonch) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2271,7 +2316,7 @@ Deficient    Normal
   border-right-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_footnote {
+:where(#cqrtwuonch) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -2280,7 +2325,7 @@ Deficient    Normal
   padding-right: 5px;
 }
 
-:where(#zepvcbvjmy) .gt_sourcenotes {
+:where(#cqrtwuonch) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2294,7 +2339,7 @@ Deficient    Normal
   border-right-color: #D3D3D3;
 }
 
-:where(#zepvcbvjmy) .gt_sourcenote {
+:where(#cqrtwuonch) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2302,64 +2347,64 @@ Deficient    Normal
   padding-right: 5px;
 }
 
-:where(#zepvcbvjmy) .gt_left {
+:where(#cqrtwuonch) .gt_left {
   text-align: left;
 }
 
-:where(#zepvcbvjmy) .gt_center {
+:where(#cqrtwuonch) .gt_center {
   text-align: center;
 }
 
-:where(#zepvcbvjmy) .gt_right {
+:where(#cqrtwuonch) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#zepvcbvjmy) .gt_font_normal {
+:where(#cqrtwuonch) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#zepvcbvjmy) .gt_font_bold {
+:where(#cqrtwuonch) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#zepvcbvjmy) .gt_font_italic {
+:where(#cqrtwuonch) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#zepvcbvjmy) .gt_super {
+:where(#cqrtwuonch) .gt_super {
   font-size: 65%;
 }
 
-:where(#zepvcbvjmy) .gt_footnote_marks {
+:where(#cqrtwuonch) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#zepvcbvjmy) .gt_asterisk {
+:where(#cqrtwuonch) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#zepvcbvjmy) .gt_indent_1 {
+:where(#cqrtwuonch) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#zepvcbvjmy) .gt_indent_2 {
+:where(#cqrtwuonch) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#zepvcbvjmy) .gt_indent_3 {
+:where(#cqrtwuonch) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#zepvcbvjmy) .gt_indent_4 {
+:where(#cqrtwuonch) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#zepvcbvjmy) .gt_indent_5 {
+:where(#cqrtwuonch) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -2367,21 +2412,21 @@ Deficient    Normal
   
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col"><strong>Variable</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>Male</strong>, N = 2,783<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col"><strong>Female</strong>, N = 2,997<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Variable</strong>"><strong>Variable</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>Male</strong>, N = 2,783<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>Male</strong>, N = 2,783<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>Female</strong>, N = 2,997<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>Female</strong>, N = 2,997<sup class="gt_footnote_marks">1</sup></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left" style="font-weight: bold;">iron_status</td>
-<td class="gt_row gt_center"></td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Deficient</td>
-<td class="gt_row gt_center">427 (15.3%)</td>
-<td class="gt_row gt_center">949 (31.7%)</td></tr>
-    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Normal</td>
-<td class="gt_row gt_center">2,356 (84.7%)</td>
-<td class="gt_row gt_center">2,048 (68.3%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">iron_status</td>
+<td headers="stat_1" class="gt_row gt_center"></td>
+<td headers="stat_2" class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Deficient</td>
+<td headers="stat_1" class="gt_row gt_center">427 (15.3%)</td>
+<td headers="stat_2" class="gt_row gt_center">949 (31.7%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Normal</td>
+<td headers="stat_1" class="gt_row gt_center">2,356 (84.7%)</td>
+<td headers="stat_2" class="gt_row gt_center">2,048 (68.3%)</td></tr>
   </tbody>
   
   <tfoot class="gt_footnotes">
@@ -2392,9 +2437,9 @@ Deficient    Normal
 </table>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate odds ratio</span></span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cc</span>(<span class="at">outcome =</span> <span class="fu">relevel</span>(nhanes_iron<span class="sc">$</span>iron_status, <span class="at">ref=</span> <span class="st">"Normal"</span>),</span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">exposure =</span> nhanes_iron<span class="sc">$</span>sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate odds ratio</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cc</span>(<span class="at">outcome =</span> <span class="fu">relevel</span>(nhanes_iron<span class="sc">$</span>iron_status, <span class="at">ref=</span> <span class="st">"Normal"</span>),</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">exposure =</span> nhanes_iron<span class="sc">$</span>sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="EPID674_05_Class_Hypothesis_Testing_files/figure-html/odds_ratio-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -2416,33 +2461,33 @@ Fisher's exact test (2-sided) P value = 0 </code></pre>
 <section id="create-fake-data-for-graphing-odds-ratio-results" class="level1">
 <h1>Create fake data for graphing odds ratio results</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Assuming that you obtained ORs and want to compare the results to what was found in other studies.</span></span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Let's create a data frame for these ORs and 95% CIs.</span></span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>study <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Overall"</span>, <span class="st">"Study 1"</span>, <span class="st">"Study 2"</span>, <span class="st">"Study 3"</span>, <span class="st">"Study 4"</span>)</span>
-<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>or <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="fl">1.1</span>, <span class="fl">2.0</span>, <span class="fl">1.4</span>, <span class="fl">1.6</span>)</span>
-<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>or_lower_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.2</span>, <span class="fl">0.9</span>, <span class="fl">1.65</span>, <span class="fl">0.95</span>, <span class="fl">1.3</span>)</span>
-<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>or_upper_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.85</span>, <span class="fl">1.35</span>, <span class="fl">2.4</span>, <span class="fl">2.05</span>, <span class="fl">2.0</span>)</span>
-<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(study, or, or_lower_lim, or_upper_lim)</span>
-<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>study <span class="ot">&lt;-</span> <span class="fu">factor</span>(results<span class="sc">$</span>study,</span>
-<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> results<span class="sc">$</span>study)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Assuming that you obtained ORs and want to compare the results to what was found in other studies.</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Let's create a data frame for these ORs and 95% CIs.</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>study <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Overall"</span>, <span class="st">"Study 1"</span>, <span class="st">"Study 2"</span>, <span class="st">"Study 3"</span>, <span class="st">"Study 4"</span>)</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>or <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="fl">1.1</span>, <span class="fl">2.0</span>, <span class="fl">1.4</span>, <span class="fl">1.6</span>)</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>or_lower_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.2</span>, <span class="fl">0.9</span>, <span class="fl">1.65</span>, <span class="fl">0.95</span>, <span class="fl">1.3</span>)</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>or_upper_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.85</span>, <span class="fl">1.35</span>, <span class="fl">2.4</span>, <span class="fl">2.05</span>, <span class="fl">2.0</span>)</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(study, or, or_lower_lim, or_upper_lim)</span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>study <span class="ot">&lt;-</span> <span class="fu">factor</span>(results<span class="sc">$</span>study,</span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> results<span class="sc">$</span>study)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="plot-odds-ratios-with-a-forest-plot" class="level1">
 <h1>Plot odds ratios with a forest plot</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Forest plot, ggplot2 package</span></span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results,</span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> or,</span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> study,</span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">xmin =</span> or_lower_lim,</span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">xmax =</span> or_upper_lim,</span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> study)) <span class="sc">+</span></span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
-<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Odds Ratio"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>,</span>
-<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Forest plot, ggplot2 package</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results,</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> or,</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> study,</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">xmin =</span> or_lower_lim,</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">xmax =</span> or_upper_lim,</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> study)) <span class="sc">+</span></span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Odds Ratio"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>,</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="EPID674_05_Class_Hypothesis_Testing_files/figure-html/forest_plot_ggplot2-1.png" class="img-fluid" width="672"></p>
 </div>

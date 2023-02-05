@@ -103,8 +103,15 @@ longer_data %>%
 ```{r}
 #| label: correlation_tests
 
+# What do you expect?
+ggplot(nhanes, aes(x = LBXIRN,
+                   y = LBXRBCSI)) + 
+  geom_point() + 
+  geom_smooth(method = lm)
+
 # Correlation test between two continuous variables (default method is Pearson, a parametric test)
-cor.test(nhanes$LBXIRN, nhanes$LBXRBCSI)
+cor.test(nhanes$LBXIRN, nhanes$LBXRBCSI) # What do you get?
+# Do they match?
 
 # Can request spearman, a non-parametric test for non-normally distributed variables
 cor.test(nhanes$RIDAGEYR, nhanes$INDFMPIR, method = "spearman")
